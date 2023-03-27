@@ -1,5 +1,4 @@
-from parser.accessor import get_data_sqlalchemy
-from parser.parcer import repeat, parce_urls
+from app.parcer import parce_urls
 
 if __name__ == '__main__':
 

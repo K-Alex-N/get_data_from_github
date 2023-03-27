@@ -4,8 +4,8 @@ import schedule
 import requests
 from bs4 import BeautifulSoup as bs
 
-from parser.accessor import add_data_sqlalchemy
-from parser.database import run_engine
+from app.accessor import add_data_sqlalchemy
+from app.database import run_engine
 
 
 def download_html(data_for_parcing):

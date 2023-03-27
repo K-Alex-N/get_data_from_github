@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import Session
 
-from parser.database import app, ParseDataModel
+from app.database import app, ParseDataModel
 
 
 def add_data_sqlalchemy(url, stars, fork, last_commit, last_release):
