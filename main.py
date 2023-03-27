@@ -1,17 +1,7 @@
-import os
-
-from parser.database import get_data_sqlalchemy, run_engine
+from parser.accessor import get_data_sqlalchemy
 from parser.parcer import repeat, parce_urls
 
-class Application:
-    pass
-
-app = Application()
-
-
 if __name__ == '__main__':
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.yml")
-    run_engine(app, config_path)
 
     urls = [
         'https://github.com/django/django',
@@ -25,23 +15,20 @@ if __name__ == '__main__':
         'https://github.com/cherrypy/cherrypy',
     ]
 
-    # SERVER_MODE = False
-    # if not SERVER_MODE:
-    #     get_html = False
-    #     save_data = True
-    #     is_repeat_active = False
-    #     get_data = False
+    # # SERVER_MODE:
+    # days = 1
+    # at = '2:00'
+    # repeat(days, at, urls)
     #
-    #     if is_repeat_active:
-    #         days = 1
-    #         at = '8:50'
-    #         repeat(days, at, urls)
-    #     else:
-    #         parce_urls(urls)
-    #
-    #     if get_data:
-    #         get_data_sqlalchemy()
-    # else:
-    #     days = 1
-    #     at = '2:00'
-    #     repeat(days, at, urls)
+    # # TESTS
+    # # if repeat
+    # days = 1
+    # at = '8:50'
+    # repeat(days, at, urls)
+
+    # if start parce data
+    parce_urls(urls)
+
+
+
+
