@@ -18,6 +18,7 @@ app = Application()
 class Base(DeclarativeBase):
     pass
 
+
 class ParseDataModel(Base):
     __tablename__ = "_fds321"
     id = Column(Integer, index=True, primary_key=True)
@@ -32,10 +33,17 @@ class ParseDataModel(Base):
 def create_db(engine):
     # создаем таблицы
     Base.metadata.create_all(bind=engine)
+
+
 def run_engine():
     setup_config(app)
-    db_url = f'postgresql+psycopg2://{app.config.database.user}:{app.config.database.password}@' \
+
+    # # for postgresql
+    # db_url = f'postgresql+psycopg2://{app.config.database.user}:{app.config.database.password}@' \
+    #          f'{app.config.database.host}:{app.config.database.port}/{app.config.database.database}'
+
+    # for mysql
+    db_url = f'mysql+mysqlconnector://{app.config.database.user}:{app.config.database.password}@' \
              f'{app.config.database.host}:{app.config.database.port}/{app.config.database.database}'
     app.engine = create_engine(db_url, echo=False)
     create_db(app.engine)
-
