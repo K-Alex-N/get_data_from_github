@@ -2,7 +2,6 @@ import datetime
 import os
 from dataclasses import dataclass
 
-import schedule
 import requests
 from bs4 import BeautifulSoup as bs
 
@@ -62,9 +61,5 @@ def parce_urls(urls):
         parce_result = parcer_data(data_for_parcing)
         run_engine()
         add_data_sqlalchemy(url, *parce_result)
+        print('end!')
 
-
-def repeat(days: int, at: str, urls: list):
-    schedule.every(days).day.at(at).do(parce_urls(urls))
-    while True:
-        schedule.run_pending()

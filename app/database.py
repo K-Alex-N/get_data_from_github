@@ -45,5 +45,6 @@ def run_engine():
     # for mysql
     db_url = f'mysql+mysqlconnector://{app.config.database.user}:{app.config.database.password}@' \
              f'{app.config.database.host}:{app.config.database.port}/{app.config.database.database}'
-    app.engine = create_engine(db_url, echo=False)
+    print(db_url)
+    app.engine = create_engine(db_url)
     create_db(app.engine)

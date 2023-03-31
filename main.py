@@ -1,3 +1,5 @@
+import schedule
+
 from app.parcer import parce_urls
 
 if __name__ == '__main__':
@@ -14,19 +16,15 @@ if __name__ == '__main__':
         'https://github.com/cherrypy/cherrypy',
     ]
 
-    # # SERVER_MODE:
-    # days = 1
-    # at = '2:00'
-    # repeat(days, at, urls)
-    #
-    # # TESTS
-    # # if repeat
-    # days = 1
-    # at = '8:50'
-    # repeat(days, at, urls)
 
-    # if start parce data
-    parce_urls(urls)
+    
+    def repeat():
+        parce_urls(urls)
+
+    schedule.every().day.at('14:54').do(repeat)
+    while True:
+        schedule.run_pending()
+
 
 
 
