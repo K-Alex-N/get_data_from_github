@@ -13,6 +13,7 @@ def download_html(data_for_parcing: 'DataForParcing'):
     if not os.path.exists(data_for_parcing.dir_name):
         os.makedirs(data_for_parcing.dir_name)
 
+
     r = requests.get(data_for_parcing.url)
     with open(data_for_parcing.url_to_main_file, 'w', encoding='utf-8') as f:
         f.write(r.text)
