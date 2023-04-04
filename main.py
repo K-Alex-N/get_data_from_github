@@ -1,9 +1,10 @@
 import schedule
-from flask import Flask, render_template
 
 from app.parcer import parce_urls
+from app.run_app import run_app
 
 if __name__ == '__main__':
+    run_app()
 
     # urls = [
     #     'https://github.com/django/django',
@@ -17,13 +18,7 @@ if __name__ == '__main__':
     #     'https://github.com/cherrypy/cherrypy',
     # ]
 
-    app = Flask(__name__)
 
-    @app.route('/')
-    def index():
-        return render_template('index.html', title='Парсер GitHub')
-
-    app.run()
     # def repeat():
     #     parce_urls(urls)
     #

@@ -4,6 +4,11 @@
          <title>{{ title }}</title>
 </head>
 <body>
+<ul>
+{% for m in menu %}
+<li>{{m}}</li>
+{% endfor %}
+</ul>
 <h1>{{ title }}</h1>
 </body>
 </html>
