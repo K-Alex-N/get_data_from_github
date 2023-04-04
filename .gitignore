@@ -1,4 +1,4 @@
 config.yml
 #data_from_github
-venv
-.idea
+.idea/
+venv/
