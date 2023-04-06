@@ -1,6 +1,3 @@
-import schedule
-
-from app.parcer import parce_urls
 from app.run_app import run_app
 
 if __name__ == '__main__':

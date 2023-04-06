@@ -5,8 +5,8 @@ from dataclasses import dataclass
 import requests
 from bs4 import BeautifulSoup as bs
 
-from app.accessor import add_data_sqlalchemy
-from app.database import run_engine
+from app.parser.accessor import add_data_sqlalchemy
+from app.parser.database import run_engine
 
 
 def download_html(data_for_parcing: 'DataForParcing'):
