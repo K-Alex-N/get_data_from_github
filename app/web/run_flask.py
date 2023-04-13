@@ -11,6 +11,6 @@ def run_flask(app: 'Flask'):
 
     @app.route('/')
     def index():
-        return render_template('index.html', title='Парсер GitHub', menu=menu)
+        return render_template('parcing_lists.html', title='Парсер GitHub', menu=menu)
 
     app.run()

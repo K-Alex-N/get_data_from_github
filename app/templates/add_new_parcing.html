@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Untitled</title>
+    <link rel="stylesheet" href="static/assets/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body>
+    <section class="py-4 py-xl-5">
+        <div class="container">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-5 col-xxl-4">
+                    <div class="card mb-5">
+                        <div class="card-body p-sm-5">
+                            <h2 class="text-center mb-4">Create GitHub scrapper</h2>
+                            <form action="/add" method="post">
+                                {% for msg in get_flashed_messages() %}
+                                <div class="text-danger">{{msg}}</div>
+                                {% endfor %}
+                                Please enter name of your scrapper.
+                                <div class="mb-3"><input class="form-control" type="text" id="name" name="scrapper_name" placeholder=""></div>
+                                Please add link to GitHub repositiory you want to scrape. Every link from new line.
+                                <div class="mb-3"><textarea class="form-control" id="message-2" name="links" rows="6" placeholder="Example: https://github.com/gogjango/gjango"></textarea></div>
+                                Please choose frequency of scrape.
+                                <div class="mb-3"><input class="form-control" type="text" id="frequency" name="frequency" placeholder=""></div>
+                                <div><button class="btn btn-primary d-block w-100" type="submit">Send</button></div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+</body>
+
+</html>
