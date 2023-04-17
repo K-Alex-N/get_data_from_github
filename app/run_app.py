@@ -1,5 +1,4 @@
 import datetime
-import os
 
 from flask import Flask, render_template, request, flash
 
@@ -12,8 +11,7 @@ app = Flask(__name__)
 db = SQLAlchemy()
 
 app.config.from_mapping(
-    SECRET_KEY='JdjhD&@281J',
-    # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+    SECRET_KEY=Flask.secret_key,
     SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/kts"
 )
 db.init_app(app)
@@ -55,6 +53,8 @@ class ParseData(db.Model):
 
 with app.app_context():
     db.create_all()
+
+
 # для миграций подключить Alembic - https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/#create-the-tablesы
 
 # def create_app() -> Flask:
@@ -98,37 +98,46 @@ def run_app():
     def page_not_found(error):
         return render_template('exeption/page404.html'), 404
 
+    def check_data(form):
+        res = []
+        if not form['name']:
+            res.append('введите название')
+        links = form['links']
+        if not links:
+            res.append('введите ссылки на репозитории')
+        else:
+            for link in links:
+                if 'https://github.com' not in link:
+                    res.append('пожалуйста введите полную ссылку на репозиторий (начинается с https://github.com)')
+                    break
+        return '\n'.join(res)
+
     @app.route('/add', methods=['POST', 'GET'])
     def add_new_parcing():
         if request.method == 'POST':
-            if not request.form['name']:
-                flash('введите название')
-            links = request.form['links']
-            if links:
-                for link in links:
-                    if 'https://github.com' not in link:
-                        flash('пожалуйста введите полную ссылку на репозиторий (начинается с https://github.com)')
-                        break
-            else:
-                flash('введите ссылки на репозитории')
+            err = check_data(request.form)
+            if err:
+                flash(err)
+                return render_template('app/add_new_parcing.html')
 
             pull_request = PullRequest(
-                name = request.form['name'],
-                start_date = datetime.datetime.now(),
-                frequency = request.form['frequency'],
+                name=request.form['name'],
+                start_date=datetime.datetime.now(),
+                frequency=request.form['frequency'],
             )
             db.session.add(pull_request)
             db.session.commit()
 
             for link in request.form['links'].split():
                 url = Url(
-                    pull_request_id = pull_request.id,
-                    url = link
+                    pull_request_id=pull_request.id,
+                    url=link
                 )
                 db.session.add(url)
             db.session.commit()
-            
-        # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
+            # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
+            # return redirect(url_for("parse_details", id=pull_request.id))
+
         return render_template('app/add_new_parcing.html')
 
     app.run()
