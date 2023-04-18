@@ -1,19 +1,32 @@
-from flask import Blueprint
+import datetime
 
-bp = Blueprint('auth', __name__)
+from flask import Blueprint, render_template, request, flash
 
-@app.route('/')
+def impt():
+    from app.db import PullRequest, db, Url
+    return PullRequest, db, Url
+
+from app.db import PullRequest, db, Url
+
+bp = Blueprint('parser', __name__, url_prefix="/parser")
+
+
+
+
+@bp.route('/')
 def parcing_lists_page():
     # return render_template('parcing_lists.html')
     return render_template('base.html')
+
 
 # @app.route('/<int:parcing_id>')
 # def parcing_data_page(parcing_id):
 #     return render_template('parcing_lists.html')
 
-@app.errorhandler(404)
+@bp.errorhandler(404)
 def page_not_found(error):
     return render_template('exeption/page404.html'), 404
+
 
 def check_data(form):
     error = []
@@ -29,29 +42,36 @@ def check_data(form):
                 break
     return '\n'.join(error)
 
-@app.route('/add', methods=['POST', 'GET'])
+
+@bp.route('/add', methods=['POST', 'GET'])
 def add_new_parcing():
+    # PullRequest, db, Url = impt()
+
     if request.method == 'POST':
         error = check_data(request.form)
         if error:
             flash(error)
             return render_template('app/add_new_parcing.html')
 
-        pull_request = PullRequest(
-            name=request.form['name'],
-            start_date=datetime.datetime.now(),
-            frequency=request.form['frequency'],
-        )
-        app.db.session.add(pull_request)
-        app.db.session.commit()
-
-        for link in request.form['links'].split():
-            url = Url(
-                pull_request_id=pull_request.id,
-                url=link
+        try:
+            pull_request = PullRequest(
+                name=request.form['name'],
+                start_date=datetime.datetime.now(), # вот это можно перенести прямо в класс!!!
+                frequency=request.form['frequency'],
             )
-            app.db.session.add(url)
-        app.db.session.commit()
+            db.session.add(pull_request)
+            db.session.commit() # попробовать db.session.flush() !!!
+
+            for link in request.form['links'].split():
+                url = Url(
+                    pull_request_id=pull_request.id,
+                    url=link
+                )
+                db.session.add(url)
+            db.session.commit()
+        except:
+            db.session.rollback()
+            print('Обшибка добавления в БД')
         # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
         # return redirect(url_for("parse_details", id=pull_request.id))
 

@@ -1,7 +1,8 @@
-from app.run_app import run_app
+# from app.run_app import run_app
+#
+# if __name__ == '__main__':
+#     run_app()
 
-if __name__ == '__main__':
-    run_app()
 
     # urls = [
     #     'https://github.com/django/django',
