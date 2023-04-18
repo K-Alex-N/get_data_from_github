@@ -6,19 +6,21 @@ from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config.from_mapping(
+    SECRET_KEY='sfsdfw234sd23rwd23rwd23',
+    SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/kts"
+)
+from . import auth
+app.register_blueprint(auth.bp)
+
 
 # app.db = SQLAlchemy()
 db = SQLAlchemy()
-
-app.config.from_mapping(
-    SECRET_KEY=Flask.secret_key,
-    SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/kts"
-)
 db.init_app(app)
 
 
-class User(
-    db.Model):  # Затем убрать все db.что-то там за счет прямого импорта. Смотри -- https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/models/#defining-models
+class User(db.Model):  # Затем убрать все db.что-то там за счет прямого импорта.
+                       # Смотри -- https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/models/#defining-models
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, unique=True, nullable=False)
@@ -86,38 +88,32 @@ def run_app():
     # def parcing_data_page(parcing_id):
     #     return render_template('parcing_lists.html')
 
-    @app.route('/login')
-    def login():
-        return render_template('auth/login.html')
 
-    @app.route('/register')
-    def register():
-        return render_template('auth/register.html')
 
     @app.errorhandler(404)
     def page_not_found(error):
         return render_template('exeption/page404.html'), 404
 
     def check_data(form):
-        res = []
+        error = []
         if not form['name']:
-            res.append('введите название')
+            error.append('введите название')
         links = form['links']
         if not links:
-            res.append('введите ссылки на репозитории')
+            error.append('введите ссылки на репозитории')
         else:
             for link in links:
                 if 'https://github.com' not in link:
-                    res.append('пожалуйста введите полную ссылку на репозиторий (начинается с https://github.com)')
+                    error.append('введите полную ссылку на репозиторий (пример https://github.com/django/django)')
                     break
-        return '\n'.join(res)
+        return '\n'.join(error)
 
     @app.route('/add', methods=['POST', 'GET'])
     def add_new_parcing():
         if request.method == 'POST':
-            err = check_data(request.form)
-            if err:
-                flash(err)
+            error = check_data(request.form)
+            if error:
+                flash(error)
                 return render_template('app/add_new_parcing.html')
 
             pull_request = PullRequest(

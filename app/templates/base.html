@@ -9,8 +9,8 @@
     <title>Untitled3</title>
     <!--    <link rel="stylesheet" href="app/templates/assets/bootstrap/css/bootstrap.min.css">-->
     <!--    <link rel="stylesheet" href="assets/css/styles.css">-->
-<!--    <link rel="stylesheet" href="{{ url_for('static', filename='') }}">-->
-<!--    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">-->
+    <!--    <link rel="stylesheet" href="{{ url_for('static', filename='') }}">-->
+    <!--    <link rel="stylesheet" href="{{ url_for('static', filename='assets/bootstrap/css/bootstrap.min.css') }}">-->
     <link rel="stylesheet" href="static/assets/bootstrap/css/bootstrap.min.css">
     <script src="static/assets/js/bootstrap.min.js"></script>
 
@@ -20,7 +20,7 @@
     <!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"-->
     <!--        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"-->
     <!--        crossorigin="anonymous"></script>-->
-<!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
 
 </head>
 
@@ -28,125 +28,204 @@
 <!--<div class="container bg-white">-->
 <!--<div class="container bg-white shadow-sm main">-->
 <!--<div class="container bg-white" style="width: 75%;">-->
-<div class="container bg-white">
-    <!--<div class="container bg-white border rounded border-white shadow-sm main" style="max_width: 500px;">-->
-    <!--    Шапка   -->
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-        <div class="col-md-3 mb-2 mb-md-0">
-            <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">
-                <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
-                    <use xlink:href="#bootstrap"></use>
-                </svg>
-            </a>
-        </div>
+<!--<header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">-->
+<!--                                <a-->
+<!--                                   class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">-->
+<!--&lt;!&ndash;                                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">&ndash;&gt;-->
+<!--&lt;!&ndash;                                        <use xlink:href="#bootstrap"></use>&ndash;&gt;-->
+<!--&lt;!&ndash;                                    </svg>&ndash;&gt;-->
+<!--                                </a>-->
 
-        <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="/" class="nav-link px-2 link-secondary">Список парсинга GitHub</a></li>
+<!--                                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">-->
+<!--                                    <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>-->
+<!--                                    <li><a href="#" class="nav-link px-2 link-dark">Features</a></li>-->
+<!--                                    <li><a href="#" class="nav-link px-2 link-dark">Pricing</a></li>-->
+<!--                                    <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>-->
+<!--                                    <li><a href="#" class="nav-link px-2 link-dark">About</a></li>-->
+<!--                                </ul>-->
 
-        </ul>
+<!--                                <div class="col-md-3 text-end">-->
+<!--                                    <button type="button" class="btn btn-outline-primary me-2">Login</button>-->
+<!--                                    <button type="button" class="btn btn-primary">Sign-up</button>-->
+<!--                                </div>-->
+<!--                            </header>-->
+<section class="py-4 py-xl-5">
+    <div class="container bg-white">
+        <div class="row d-flex justify-content-center">
+            <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+                                <a
+                                   class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+<!--                                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">-->
+<!--                                        <use xlink:href="#bootstrap"></use>-->
+<!--                                    </svg>-->
+                                </a>
 
-        <div class="col-md-3 text-end">
-            <button type="button" class="btn btn-outline-primary me-2">Войти</button>
-            <button type="button" class="btn btn-primary">Регистрация</button>
-        </div>
-    </header>
-    <!--    Аккардион    -->
-    <div class="accordion" role="tablist" id="accordion-1">
-        <div class="accordion-item">
-            <!-- Заголовок аккардиона -->
-            <h2 class="accordion-header" role="tab">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accordion-1 .item-1" aria-expanded="true" aria-controls="accordion-1 .item-1">
-                    Python web-frameworks
-                </button>
-            </h2>
-            <div class="accordion-collapse collapse item-1" role="tabpanel">
-                <div class="accordion-body">
-                    <!--<div class="card-body px-1 py-2" style="padding: 12px;">-->
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h4>Scrap list</h4>
-                                <div class="list-group list-group-flush ">
-                                    <a href="#"
-                                       class="list-group-item list-group-item-action">django/<strong>django</strong></a>
-                                    <a href="#" class="list-group-item list-group-item-action">pallets/flask</a>
-                                    <a href="#" class="list-group-item list-group-item-action">tiangolo/fastapi</a>
-                                    <a href="#" class="list-group-item list-group-item-action"><small
-                                            class="text-muted">tornadoweb/</small>tornado</a>
-                                    <a href="#" class="list-group-item list-group-item-action">aio-libs/aiohttp</a>
-                                    <a href="#" class="list-group-item list-group-item-action">sanic-org/sanic</a>
-                                    <a href="#" class="list-group-item list-group-item-action">bottlepy/bottle</a>
-                                    <a href="#" class="list-group-item list-group-item-action">Pylons/pyramid</a>
-                                    <a href="#" class="list-group-item list-group-item-action">cherrypy/cherrypy</a>
+                                <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                                    <li><a href="#" class="nav-link px-2 link-secondary">Home</a></li>
+                                    <li><a href="#" class="nav-link px-2 link-dark">Features</a></li>
+                                    <li><a href="#" class="nav-link px-2 link-dark">Pricing</a></li>
+                                    <li><a href="#" class="nav-link px-2 link-dark">FAQs</a></li>
+                                    <li><a href="#" class="nav-link px-2 link-dark">About</a></li>
+                                </ul>
+
+                                <div class="col-md-3 text-end">
+                                    <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                                    <button type="button" class="btn btn-primary">Sign-up</button>
+                                </div>
+                            </header>
+<!--            <div class="col-7">-->
+                <div class="card shadow-lg mb-5">  <!--обводка-->
+                    <div class="card-body p-sm-5"> <!--отступы от обводки-->
+                        <!--<div class="container bg-white border rounded border-white shadow-sm main" style="max_width: 500px;">-->
+                        <!--    Шапка   -->
+                        <div class="container">
+
+                        </div>
+
+
+<!--                        <header class="d-flex flex-wrap align-items-left justify-content-left justify-content-md-between py-3 mb-4 border-bottom">-->
+<!--                            <div class="row">-->
+<!--                                &lt;!&ndash;                            <div class="col-md-3 mb-2 mb-md-0">&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                    <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                        <use xlink:href="#bootstrap"></use>&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                    </svg>&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                </a>&ndash;&gt;-->
+<!--                                &lt;!&ndash;                            </div>&ndash;&gt;-->
+
+<!--                                &lt;!&ndash;                            <ul class="nav col-12 col-md-auto mb-2 justify-content-left mb-md-0">&ndash;&gt;-->
+<!--                                &lt;!&ndash;                                <li><a href="/" class="nav-link px-2 link-secondary">Список парсинга GitHub</a></li>&ndash;&gt;-->
+
+<!--                                &lt;!&ndash;                            </ul>&ndash;&gt;-->
+<!--                                <h2 class="text-center text-dark mb-4">Список парсинга GitHub</h2>-->
+<!--                            </div>-->
+
+<!--                        </header>-->
+
+<!--                        &lt;!&ndash;                        <div class="row justify-content-right">&ndash;&gt;-->
+<!--                        <div class="col-md-3 text-end">-->
+<!--                            <button type="button" class="btn btn-outline-primary me-2">Войти</button>-->
+<!--                            <button type="button" class="btn btn-primary">Регистрация</button>-->
+<!--                        </div>-->
+<!--                        &lt;!&ndash;                            </div>&ndash;&gt;-->
+                        <!--    Аккардион    -->
+                        <div class="accordion" role="tablist" id="accordion-1">
+                            <div class="accordion-item">
+                                <!-- Заголовок аккардиона -->
+                                <h2 class="accordion-header" role="tab">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#accordion-1 .item-1" aria-expanded="true"
+                                            aria-controls="accordion-1 .item-1">
+                                        Python web-frameworks
+                                    </button>
+                                </h2>
+                                <div class="accordion-collapse collapse item-1" role="tabpanel">
+                                    <div class="accordion-body">
+                                        <!--<div class="card-body px-1 py-2" style="padding: 12px;">-->
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h4>Scrap list</h4>
+                                                    <div class="list-group list-group-flush ">
+                                                        <a href="#"
+                                                           class="list-group-item list-group-item-action">django/<strong>django</strong></a>
+                                                        <a href="#"
+                                                           class="list-group-item list-group-item-action">pallets/flask</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">tiangolo/fastapi</a>
+                                                        <a href="#"
+                                                           class="list-group-item list-group-item-action"><small
+                                                                class="text-muted">tornadoweb/</small>tornado</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">aio-libs/aiohttp</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">sanic-org/sanic</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">bottlepy/bottle</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">Pylons/pyramid</a>
+                                                        <a href="#" class="list-group-item list-group-item-action">cherrypy/cherrypy</a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <h4>Info</h4>
+                                                    <ul class="list-unstyled">
+                                                        <li>Started at: Nov 12, 2015</li>
+                                                        <li>By: Alex</li>
+                                                        <li>Frequescy: daily</li>
+                                                        <li>Already scraped: 44 times</li>
+                                                    </ul>
+                                                    <div class="d-flex gap-2 mb-3">
+                                                        <button type="button" class="btn btn-outline-primary">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                 height="24"
+                                                                 fill="currentColor"
+                                                                 class="bi bi-file-earmark-arrow-down"
+                                                                 viewBox="0 0 16 16">
+                                                                <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"></path>
+                                                                <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"></path>
+                                                            </svg>
+                                                            .CSV
+                                                        </button>
+                                                        <!--                                    <button type="button" class="btn btn-secondary">-->
+                                                        <button type="button" class="btn btn-outline-warning">
+                                                            Graphs
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                 height="24"
+                                                                 fill="currentColor" class="bi bi-arrow-right-square"
+                                                                 viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd"
+                                                                      d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--</div>-->
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <h4>Info</h4>
-                                <ul class="list-unstyled">
-                                    <li>Started at: Nov 12, 2015</li>
-                                    <li>By: Alex</li>
-                                    <li>Frequescy: daily</li>
-                                    <li>Already scraped: 44 times</li>
-                                </ul>
-                                <div class="d-flex gap-2 mb-3">
-                                    <button type="button" class="btn btn-outline-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             fill="currentColor" class="bi bi-file-earmark-arrow-down"
-                                             viewBox="0 0 16 16">
-                                            <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"></path>
-                                            <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"></path>
-                                        </svg>
-                                        .CSV
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" role="tab">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#accordion-1 .item-2" aria-expanded="false"
+                                            aria-controls="accordion-1 .item-2">
+                                        100 most popular repository on GitHub
                                     </button>
-                                    <!--                                    <button type="button" class="btn btn-secondary">-->
-                                    <button type="button" class="btn btn-outline-warning">
-                                        Graphs
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                             fill="currentColor" class="bi bi-arrow-right-square" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd"
-                                                  d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-                                        </svg>
+                                </h2>
+                                <div class="accordion-collapse collapse item-2" role="tabpanel">
+                                    <div class="accordion-body">
+                                        <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras
+                                            justo odio,
+                                            dapibus
+                                            ac
+                                            facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
+                                            metus.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" role="tab">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#accordion-1 .item-3" aria-expanded="false"
+                                            aria-controls="accordion-1 .item-3">
+                                        Accordion Item
                                     </button>
+                                </h2>
+                                <div class="accordion-collapse collapse item-3" role="tabpanel">
+                                    <div class="accordion-body">
+                                        <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras
+                                            justo odio,
+                                            dapibus
+                                            ac
+                                            facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
+                                            metus.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--</div>-->
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" role="tab">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accordion-1 .item-2" aria-expanded="false" aria-controls="accordion-1 .item-2">
-                    100 most popular repository on GitHub
-                </button>
-            </h2>
-            <div class="accordion-collapse collapse item-2" role="tabpanel">
-                <div class="accordion-body">
-                    <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac
-                        facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
-                </div>
-            </div>
-        </div>
-        <div class="accordion-item">
-            <h2 class="accordion-header" role="tab">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#accordion-1 .item-3" aria-expanded="false" aria-controls="accordion-1 .item-3">
-                    Accordion Item
-                </button>
-            </h2>
-            <div class="accordion-collapse collapse item-3" role="tabpanel">
-                <div class="accordion-body">
-                    <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac
-                        facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
+</section>
 <!--<script src="assets/bootstrap/js/bootstrap.min.js"></script>-->
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>-->
 <!--    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>-->
