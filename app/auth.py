@@ -5,12 +5,12 @@ from flask import (
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.run_app import User, db
+from parser.run_app import User, db
 
 # from flaskr.db import get_db
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
-
+# bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__)
 
 
 @app.route('/login', methods=('GET', 'POST'))
@@ -40,13 +40,20 @@ def login():
 
 
 def chech_register_data(username, password, email):
+    user_from_db = db.session.execute(db.select(User).where(username=username)).scalar_one()
+    email_from_db = db.session.execute(db.select(User).where(email=email)).scalar_one()
+
+    error = None
     if not username:
         error = 'Username is required.'
     elif not password:
         error = 'Password is required.'
+    elif username == user_from_db:
+        error = 'Username already exists.'
+    elif email == email_from_db:
+        error = 'Email already exists.'
 
-    user = db.session.execute(db.select(User).filter_by(username=username)).scalar_one()
-
+    return error
 
 
 @app.route('/register')
@@ -61,27 +68,9 @@ def register():
             flash(error)
             return redirect
 
+        db.session.add(User(login=username, password=password, email=email))
+        db.session.commit()
 
-            new_user = User(
-                login=username,
-                password=password,
-                email=request.form['email']
-            )
-
-            db.session.add(new_user)
-            db.session.commit()
-
-            try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-            except db.IntegrityError:
-                error = f"User {username} is already registered."
-            else:
-                return redirect(url_for("auth.login"))
-
-        flash(error)
+        return redirect(url_for("auth.login"))
 
     return render_template('auth/register.html')
