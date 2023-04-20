@@ -14,17 +14,15 @@ parser = Blueprint('parser', __name__)
 
 @parser.route('/')
 def parcing_lists_page():
-    # return render_template('parcing_lists.html')
-    return render_template('base.html')
+
+    return render_template('app/parsing_lists.html')
 
 
 # @parser.route('/<int:parcing_id>')
 # def parcing_data_page(parcing_id):
-#     return render_template('parcing_lists.html')
+#     return render_template('parsing_lists.html')
 
-@parser.errorhandler(404)
-def page_not_found(error):
-    return render_template('exeption/page404.html'), 404
+
 
 
 def check_data(form):

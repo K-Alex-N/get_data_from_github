@@ -1,24 +1,34 @@
+from flask_login import UserMixin
+
 from app.run_app import db
 
 
 # from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-# Flask-login подключить? что он делает?
 # app.db = SQLAlchemy() - Pycharm на это ругается. хотя я не проверял правда ли будет ошибка
+# для миграций подключить Alembic - https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/#create-the-tables
 
-# для миграций подключить Alembic - https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/#create-the-tablesы
-class User(db.Model):  # Затем убрать все db.что-то там за счет прямого импорта.
+
+class User(db.Model, UserMixin):  # Затем убрать все db.что-то там за счет прямого импорта.
     # Смотри -- https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/models/#defining-models
+    """
+    checked in business-logic
+        username UNIQUE and NOT NULL
+        password NOT NULL
+        email UNIQUE and NOT NULL
+    """
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String, unique=True, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    username = db.Column(db.String)
+    password = db.Column(db.String)
     email = db.Column(db.String)
     is_email_confirmed = db.Column(db.Boolean, default=False)
+
+    pill_requests = db.relationship('PullRequest')
 
 
 class PullRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
-    user_id = db.Column(db.ForeignKey(User.id))  # maybe need to add "db.Integer"
+    user_id = db.Column(db.ForeignKey(User.id))
     start_date = db.Column(db.Date, nullable=False)
     frequency = db.Column(db.Integer, nullable=False)
     actual_qty = db.Column(db.Integer, default=0)
@@ -38,3 +48,8 @@ class ParseData(db.Model):
     fork = db.Column(db.String, nullable=False)
     last_commit = db.Column(db.String)
     last_release = db.Column(db.String)
+
+# DROP TABLE parse_data;
+# DROP TABLE url;
+# DROP TABLE pull_request;
+# DROP TABLE "user";

@@ -67,6 +67,9 @@
                 <div class="card shadow-lg mb-5">  <!--обводка-->
                     <div class="card-body p-sm-5"> <!--отступы от обводки-->
                         <h2 class="text-center text-dark mb-4">Welcome Back!</h2>
+                        {% for msg in get_flashed_messages() %}
+                        <div class="text-danger">{{msg}}</div>
+                        {% endfor %}
                         <form action="/add" method="post">
                             <!--                            <form class="user">-->
                             <div class="mb-3"><input class="form-control form-control-user" type="email"

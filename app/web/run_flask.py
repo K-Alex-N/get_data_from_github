@@ -11,6 +11,6 @@
 #
 #     @app.route('/')
 #     def index():
-#         return render_template('parcing_lists.html', title='Парсер GitHub', menu=menu)
+#         return render_template('parsing_lists.html', title='Парсер GitHub', menu=menu)
 #
 #     app.run()
