@@ -22,16 +22,21 @@ class User(db.Model, UserMixin):  # Затем убрать все db.что-т�
     email = db.Column(db.String)
     is_email_confirmed = db.Column(db.Boolean, default=False)
 
-    pill_requests = db.relationship('PullRequest')
+    # pill_requests = db.relationship('PullRequest')
 
 
 class PullRequest(db.Model):
+    """
+    checked in business-logic
+        name NOT NULL
+        start_date NOT NULL
+    """
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True, nullable=False)
+    name = db.Column(db.String)
     user_id = db.Column(db.ForeignKey(User.id))
-    start_date = db.Column(db.Date, nullable=False)
-    frequency = db.Column(db.Integer, nullable=False)
-    actual_qty = db.Column(db.Integer, default=0)
+    start_date = db.Column(db.DateTime)
+    frequency = db.Column(db.Integer)
+    # actual_qty = db.Column(db.Integer, default=0)
 
 
 class Url(db.Model):
@@ -49,7 +54,10 @@ class ParseData(db.Model):
     last_commit = db.Column(db.String)
     last_release = db.Column(db.String)
 
-# DROP TABLE parse_data;
-# DROP TABLE url;
-# DROP TABLE pull_request;
-# DROP TABLE "user";
+
+"""
+DROP TABLE parse_data;
+DROP TABLE url;
+DROP TABLE pull_request;
+DROP TABLE "user";
+"""
