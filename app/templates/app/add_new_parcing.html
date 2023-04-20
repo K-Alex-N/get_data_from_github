@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Untitled</title>
-    <link rel="stylesheet" href="static/assets/bootstrap/css/bootstrap.min.css">
-</head>
-
-<body>
-<section class="py-4 py-xl-5"> <!--отступы сверху-->
+{% extends "base.html" %}{% block title %}Add new scrapper{% endblock %}{% block content %}
+<!--<section class="py-4 py-xl-5"> &lt;!&ndash;отступы сверху&ndash;&gt;-->
     <div class="container">
         <div class="row d-flex justify-content-center">
             <div class="col-5">
@@ -51,8 +41,4 @@
             </div>
         </div>
     </div>
-</section>
-<script src="static/assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+</section>{% endblock %}
