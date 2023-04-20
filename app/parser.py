@@ -45,7 +45,7 @@ def check_data(name, links):
 
 @parser.route('/add', methods=['POST', 'GET'])
 @login_required
-def add_new_parcing():              # DONE!!!
+def add_new_parcing():  # DONE!!!
     if request.method == 'POST':
         name = request.form.get('name')
         links = request.form.get('links')

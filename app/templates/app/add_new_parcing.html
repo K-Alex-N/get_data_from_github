@@ -1,44 +1,49 @@
-{% extends "base.html" %}{% block title %}Add new scrapper{% endblock %}{% block content %}
-<!--<section class="py-4 py-xl-5"> &lt;!&ndash;отступы сверху&ndash;&gt;-->
-    <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-5">
-                <div class="card shadow-lg mb-5">  <!--обводка-->
-                    <div class="card-body p-sm-5"> <!--отступы от обводки-->
-                        <h2 class="text-center text-dark mb-4">Create GitHub scrapper</h2>
-                        <form action="/add" method="post">
-                            {% for msg in get_flashed_messages() %}
-                            <div class="text-danger">{{msg}}</div>
-                            {% endfor %}
-                            <strong class="text-dark">Scrapper name</strong>
-                            <div class="mb-3"><input class="form-control" type="text" id="name" name="name"
-                                                     placeholder=""></div>
-                            <div><strong class="text-dark">Links</strong></div>
-                            Every link from new line
-                            <div class="mb-3"><textarea class="form-control" id="message-2" name="links" rows="6"
-                                                        placeholder="https://github.com/django/django https://github.com/pallets/flask"></textarea>
+{% extends "base.html" %}
+
+{% block title %}
+Add new scrapper
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-5">
+            <div class="card shadow-lg mb-5">  <!--обводка-->
+                <div class="card-body p-sm-5"> <!--отступы от обводки-->
+                    <h2 class="text-center text-dark mb-4">Create GitHub scrapper</h2>
+                    <form action="/add" method="post">
+                        {% for msg in get_flashed_messages() %}
+                        <div class="text-danger">{{msg}}</div>
+                        {% endfor %}
+                        <strong class="text-dark">Scrapper name</strong>
+                        <div class="mb-3"><input class="form-control" type="text" id="name" name="name"
+                                                 placeholder=""></div>
+                        <div><strong class="text-dark">Links</strong></div>
+                        Every link from new line
+                        <div class="mb-3"><textarea class="form-control" id="message-2" name="links" rows="6"
+                                                    placeholder="https://github.com/django/django https://github.com/pallets/flask"></textarea>
+                        </div>
+                        <strong class="text-dark">Parse frequency</strong>
+                        <div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="frequency" id="exampleRadios1" value="1" checked>
+                                <label class="form-check-label" for="exampleRadios1">every day</label>
                             </div>
-                            <strong class="text-dark">Parse frequency</strong>
-                            <div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="frequency" id="exampleRadios1" value="1" checked>
-                                    <label class="form-check-label" for="exampleRadios1">every day</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="frequency" id="exampleRadios2" value="7">
-                                    <label class="form-check-label" for="exampleRadios2">every week</label>
-                                </div>
-                                <div class="form-check disabled">
-                                    <input class="form-check-input" type="radio" name="frequency" id="exampleRadios3" value="28">
-                                    <label class="form-check-label" for="exampleRadios3">every 28 days</label>
-                                </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="frequency" id="exampleRadios2" value="7">
+                                <label class="form-check-label" for="exampleRadios2">every week</label>
                             </div>
-                            <p></p>
-                            <button class="btn btn-primary d-block w-100" type="submit">Create</button>
-                        </form>
-                    </div>
+                            <div class="form-check disabled">
+                                <input class="form-check-input" type="radio" name="frequency" id="exampleRadios3" value="28">
+                                <label class="form-check-label" for="exampleRadios3">every 28 days</label>
+                            </div>
+                        </div>
+                        <p></p>
+                        <button class="btn btn-primary d-block w-100" type="submit">Create</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</section>{% endblock %}
+</div>
+{% endblock %}
