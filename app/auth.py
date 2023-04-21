@@ -21,11 +21,12 @@ def login():
         password = request.form.get('password')
 
         user = User.query.filter_by(username=username).first()
+        print(user)
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.home'))
+                return redirect(url_for('parser.parcing_lists_page', user=current_user))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -40,39 +41,40 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-def chech_register_data(username, password, password_repeat, email):
-    error = None
-    if not username:
-        error = 'Username is required.'
-    elif not password or not password_repeat:
-        error = 'Password and "Repeat password" are required.'
-    elif password != password_repeat:
-        error = 'Passwords are not the same.'
-    else:
-        user_from_db = User.query.filter_by(username=username).first()
-        # user_from_db = db.session.execute(db.select(User).filter_by(username=username)).scalar_one_or_none()
-        # email_from_db = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
-        email_from_db = User.query.filter_by(email=email).first()
 
-        if user_from_db:
-            error = 'Username already exists.'
-        elif email_from_db:
-            error = 'Email already exists.'
-
-    return error
 
 
 @auth.route('/register', methods=('GET', 'POST'))
 def register():
+    def chech_data(username, password, password_repeat, email):
+        error = None
+        if not username:
+            error = 'Username is required.'
+        elif not password or not password_repeat:
+            error = 'Password and "Repeat password" are required.'
+        elif password != password_repeat:
+            error = 'Passwords are not the same.'
+        else:
+            user_from_db = User.query.filter_by(username=username).first()
+            email_from_db = User.query.filter_by(email=email).first()
+
+            if user_from_db:
+                error = 'Username already exists.'
+            elif email_from_db:
+                error = 'Email already exists.'
+
+        return error
+
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         password_repeat = request.form['password_repeat']
         email = request.form['email']
 
-        error = chech_register_data(username, password, password_repeat, email)
+        error = chech_data(username, password, password_repeat, email)
         if error:
-            flash(error)
+            flash(error, category='error')
         else:
             new_user = User(username=username,
                             password=generate_password_hash(password, method='sha256'),
@@ -81,6 +83,6 @@ def register():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('parser.parcing_lists_page'))
+            return redirect(url_for('parser.parcing_lists_page', user=current_user))
 
-    return render_template('auth/register.html')
+    return render_template('auth/register.html', user=current_user)

@@ -13,6 +13,7 @@ parser = Blueprint('parser', __name__)
 
 
 @parser.route('/')
+# @login_required - нельзя. любой приходящий должен увидеть список
 def parcing_lists_page():
     pull_requests = PullRequest.query.all()
     for rqst in pull_requests:
@@ -20,7 +21,7 @@ def parcing_lists_page():
         start_date = rqst.start_date
         frequency = rqst.frequency
 
-    return render_template('app/parsing_lists.html')
+    return render_template('app/parsing_lists.html', user=current_user)
 
 
 # @parser.route('/<int:parcing_id>')
@@ -53,7 +54,7 @@ def add_new_parcing():  # DONE!!!
 
         error = check_data(name, links)
         if error:
-            flash(error)
+            flash(error, category='error')
         else:
             try:
                 pull_request = PullRequest(
@@ -72,11 +73,11 @@ def add_new_parcing():  # DONE!!!
                     )
                     db.session.add(url)
                 db.session.commit()
-                return redirect(url_for('parser.parcing_lists_page'))
+                return redirect(url_for('parser.parcing_lists_page', user=current_user))
             except:
                 db.session.rollback()
                 print('Обшибка добавления в БД')
             # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
             # return redirect(url_for("parse_details", id=pull_request.id))
 
-    return render_template('app/add_new_parcing.html')
+    return render_template('app/add_new_parsing.html', user=current_user)
