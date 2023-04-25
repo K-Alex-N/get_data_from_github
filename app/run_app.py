@@ -25,6 +25,7 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -42,14 +43,20 @@ scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
 
+
 @scheduler.task('interval', seconds=30)
-def every_day_parsing():
+# @scheduler.task('cron', minute=0, hour=0, day='*')
+def everyday_parsing():
     with scheduler.app.app_context():
         urls = Url.query.all()
         if not parse_urls(urls):
             # отправлять алерт на почту
             pass
 
+# @scheduler.task('cron', hour=23, minute=59, day='*')
+# def everyday_delete_JSONs():
+#     with scheduler.app.app_context():
+#         pass
 
 
 #     # app.config.from_pyfile('config.py', silent=True)
