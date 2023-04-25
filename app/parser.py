@@ -2,7 +2,7 @@ import datetime
 import json
 
 import requests
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, url_for, send_from_directory, send_file
 from flask import request
 from flask import flash
 from flask import render_template
@@ -116,11 +116,11 @@ def add_new_parcing():
                 db.session.rollback()
                 flash('Обшибка добавления в БД', category='error')
 
-
     return render_template('app/add_new_parsing.html', user=current_user)
 
-@parser.route('/json', methods=['POST', 'GET'])
-def create_JSON():
+
+@parser.route('/download_json/<int:pull_request_id>', methods=['POST', 'GET'])
+def download_json(pull_request_id):
     """
     название файла это pull_request.id
 
@@ -129,8 +129,8 @@ def create_JSON():
             date: {
                 parse_data
             },
-            next_date: {},
-        next_url: {}
+            ...
+        ...
         }
 
     data = {
@@ -144,9 +144,9 @@ def create_JSON():
         }
     """
 
-    # get data from DB
+    # get data from DB and put it in dictionary
     d = {}
-    urls_id = Url.query.filter_by(pull_request_id=11)
+    urls_id = Url.query.filter_by(pull_request_id=pull_request_id)
     for u in urls_id:
         d[u.id] = {}
         data_by_url_id = ParseData.query.filter_by(url_id=u.id)
@@ -159,7 +159,11 @@ def create_JSON():
             }
 
     # create JSON file
-    with open("sample.json", "w") as f:
+    file_path = f"app/data/{pull_request_id}.json"
+    with open(file_path, "w") as f:
         json.dump(d, f)
 
-    return 'bla bla'
+
+    return send_file(f'data/{pull_request_id}.json',
+                     as_attachment=True,
+                     download_name='parsed_data_from_' + str(datetime.date.today()) + '.json')

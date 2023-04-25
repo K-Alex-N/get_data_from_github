@@ -27,7 +27,7 @@ List of parsers
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <h4>Scrap list</h4>
+                                            <h4>Links</h4>
                                             <div class="list-group list-group-flush ">
                                                 {% for u in url if u.pull_request_id == pr.id %}
                                                 <a href="{{ u.url }}" class="list-group-item list-group-item-action">{{
@@ -40,16 +40,18 @@ List of parsers
                                             <ul class="list-unstyled">
                                                 <li>Started {{ pr.start_date.date() }}</li>
                                                 <li>By {{ user.username }}</li>
+                                                <!--
                                                 <li>Frequency:
                                                     {% if pr.frequency == 1 %} daily
                                                     {% elif pr.frequency == 7 %} weekly
                                                     {% elif pr.frequency == 28 %} every 28 days
                                                     {% endif %}
                                                 </li>
-                                                <!-- <li>Already done 44 scrapings</li>-->
+                                                -->
+                                                 <li>Already done 44 scrapings</li>
                                             </ul>
                                             <div class="d-flex gap-2 mb-3">
-                                                <button type="button" class="btn btn-outline-primary">
+                                                <a href="{{ url_for('parser.download_json', pull_request_id=pr.id) }}" type="button" class="btn btn-outline-primary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                          height="24"
                                                          fill="currentColor"
@@ -58,8 +60,8 @@ List of parsers
                                                         <path d="M8.5 6.5a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 10.293V6.5z"></path>
                                                         <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"></path>
                                                     </svg>
-                                                    .CSV
-                                                </button>
+                                                    .JSON
+                                                </a>
                                                 <!--                                    <button type="button" class="btn btn-secondary">-->
                                                 <button type="button" class="btn btn-outline-warning">
                                                     Graphs
