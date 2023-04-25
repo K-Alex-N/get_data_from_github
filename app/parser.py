@@ -31,16 +31,21 @@ def parse_urls(urls):
         try:
             # Parse data
             r = requests.get(u.url)
-            soup = bs(r.text, "lxml")
-            stars = soup.find(id="repo-stars-counter-star")['title'].replace(',', '')
-            fork = soup.find(id="repo-network-counter")['title'].replace(',', '')
-            last_commit = soup.find('relative-time')['datetime']
+            if '404 ' not in r.text:
+                soup = bs(r.text, "lxml")
+                stars = soup.find(id="repo-stars-counter-star")['title'].replace(',', '')
+                fork = soup.find(id="repo-network-counter")['title'].replace(',', '')
+                last_commit = soup.find('relative-time')['datetime']
 
-            r = requests.get(u.url + '/tags')
-            soup = bs(r.text, "lxml")
-            last_release = soup.find('relative-time')
-            if last_release:
-                last_release = last_release['datetime']
+                r = requests.get(u.url + '/tags')
+                soup = bs(r.text, "lxml")
+                last_release = soup.find('relative-time')
+                if last_release:
+                    last_release = last_release['datetime']
+            else:
+                # не верный url
+                # пока так
+                stars, fork, last_commit, last_release = 'Error!', 'Error!', 'Error!', 'Error!'
 
             # save data in DB
             parse_data = ParseData(url_id=u.id,

@@ -42,14 +42,13 @@ scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
 
-@scheduler.task('interval', seconds=20)
+@scheduler.task('interval', seconds=30)
 def every_day_parsing():
     with scheduler.app.app_context():
         urls = Url.query.all()
         if not parse_urls(urls):
+            # отправлять алерт на почту
             pass
-        # отправлять алерт на почту
-
 
 
 
