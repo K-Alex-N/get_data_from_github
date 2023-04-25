@@ -4,7 +4,9 @@ from flask import flash
 from flask import redirect
 from flask import url_for
 from flask import render_template
-from flask_login import login_required, login_user, current_user
+from flask_login import login_required
+from flask_login import login_user
+from flask_login import current_user
 from flask_login import logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -28,11 +30,12 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for('parser.parcing_lists_page', user=current_user))
             else:
-                flash('Incorrect password, try again.', category='error')
+                flash('Incorrect password, try again', category='error')
         else:
-            flash('Usermane does not exist.', category='error')
+            flash('Usermane does not exist', category='error')
 
     return render_template('auth/login.html', user=current_user)
+
 
 @auth.route('/logout')
 @login_required
@@ -41,30 +44,26 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
-
-
-
 @auth.route('/register', methods=('GET', 'POST'))
 def register():
     def chech_data(username, password, password_repeat, email):
         error = None
         if not username:
-            error = 'Username is required.'
+            error = 'Username is required'
         elif not password or not password_repeat:
-            error = 'Password and "Repeat password" are required.'
+            error = 'Password and "Repeat password" are required'
         elif password != password_repeat:
-            error = 'Passwords are not the same.'
+            error = 'Passwords are not the same'
         else:
             user_from_db = User.query.filter_by(username=username).first()
             email_from_db = User.query.filter_by(email=email).first()
 
             if user_from_db:
-                error = 'Username already exists.'
+                error = 'Username already exists'
             elif email_from_db:
-                error = 'Email already exists.'
+                error = 'Email already exists'
 
         return error
-
 
     if request.method == 'POST':
         username = request.form['username']

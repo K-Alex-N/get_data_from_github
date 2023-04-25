@@ -7,82 +7,46 @@ List of parsers
 {% block content %}
 <div class="container bg-white">
     <div class="row d-flex justify-content-center">
-        <!--            <div class="col-7">-->
         <div class="card shadow-lg mb-5">  <!--обводка-->
             <div class="card-body p-sm-5"> <!--отступы от обводки-->
-                <!--<div class="container bg-white border rounded border-white shadow-sm main" style="max_width: 500px;">-->
-                <!--    Шапка   -->
-                <div class="container">
-
-                </div>
-
-
-                <!--                        <header class="d-flex flex-wrap align-items-left justify-content-left justify-content-md-between py-3 mb-4 border-bottom">-->
-                <!--                            <div class="row">-->
-                <!--                                &lt;!&ndash;                            <div class="col-md-3 mb-2 mb-md-0">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                    <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                        <use xlink:href="#bootstrap"></use>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                    </svg>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                </a>&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                            </div>&ndash;&gt;-->
-
-                <!--                                &lt;!&ndash;                            <ul class="nav col-12 col-md-auto mb-2 justify-content-left mb-md-0">&ndash;&gt;-->
-                <!--                                &lt;!&ndash;                                <li><a href="/" class="nav-link px-2 link-secondary">Список парсинга GitHub</a></li>&ndash;&gt;-->
-
-                <!--                                &lt;!&ndash;                            </ul>&ndash;&gt;-->
-                <!--                                <h2 class="text-center text-dark mb-4">Список парсинга GitHub</h2>-->
-                <!--                            </div>-->
-
-                <!--                        </header>-->
-
-                <!--                        &lt;!&ndash;                        <div class="row justify-content-right">&ndash;&gt;-->
-                <!--                        <div class="col-md-3 text-end">-->
-                <!--                            <button type="button" class="btn btn-outline-primary me-2">Войти</button>-->
-                <!--                            <button type="button" class="btn btn-primary">Регистрация</button>-->
-                <!--                        </div>-->
-                <!--                        &lt;!&ndash;                            </div>&ndash;&gt;-->
                 <!--    Аккардион    -->
+
                 <div class="accordion" role="tablist" id="accordion-1">
+                    {% for pr in pull_requests %}
                     <div class="accordion-item">
                         <!-- Заголовок аккардиона -->
                         <h2 class="accordion-header" role="tab">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#accordion-1 .item-1" aria-expanded="true"
-                                    aria-controls="accordion-1 .item-1">
-                                Python web-frameworks
+                                    data-bs-target="#accordion-1 .item-{{ pr.id }}" aria-expanded="true"
+                                    aria-controls="accordion-1 .item-{{ pr.id }}">
+                                {{pr.name}}
                             </button>
                         </h2>
-                        <div class="accordion-collapse collapse item-1" role="tabpanel">
+                        <div class="accordion-collapse collapse item-{{ pr.id }}" role="tabpanel">
                             <div class="accordion-body">
-                                <!--<div class="card-body px-1 py-2" style="padding: 12px;">-->
                                 <div class="container">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <h4>Scrap list</h4>
                                             <div class="list-group list-group-flush ">
-                                                <a href="#"
-                                                   class="list-group-item list-group-item-action">django/<strong>django</strong></a>
-                                                <a href="#"
-                                                   class="list-group-item list-group-item-action">pallets/flask</a>
-                                                <a href="#" class="list-group-item list-group-item-action">tiangolo/fastapi</a>
-                                                <a href="#"
-                                                   class="list-group-item list-group-item-action"><small
-                                                        class="text-muted">tornadoweb/</small>tornado</a>
-                                                <a href="#" class="list-group-item list-group-item-action">aio-libs/aiohttp</a>
-                                                <a href="#" class="list-group-item list-group-item-action">sanic-org/sanic</a>
-                                                <a href="#" class="list-group-item list-group-item-action">bottlepy/bottle</a>
-                                                <a href="#" class="list-group-item list-group-item-action">Pylons/pyramid</a>
-                                                <a href="#" class="list-group-item list-group-item-action">cherrypy/cherrypy</a>
+                                                {% for u in url if u.pull_request_id == pr.id %}
+                                                <a href="{{ u.url }}" class="list-group-item list-group-item-action">{{
+                                                    u.url.replace('https://github.com/', '') }}</a>
+                                                {% endfor %}
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <h4>Info</h4>
                                             <ul class="list-unstyled">
-                                                <li>Started at: Nov 12, 2015</li>
-                                                <li>By: Alex</li>
-                                                <li>Frequescy: daily</li>
-                                                <li>Already scraped: 44 times</li>
+                                                <li>Started {{ pr.start_date.date() }}</li>
+                                                <li>By {{ user.username }}</li>
+                                                <li>Frequency:
+                                                    {% if pr.frequency == 1 %} daily
+                                                    {% elif pr.frequency == 7 %} weekly
+                                                    {% elif pr.frequency == 28 %} every 28 days
+                                                    {% endif %}
+                                                </li>
+                                                <!-- <li>Already done 44 scrapings</li>-->
                                             </ul>
                                             <div class="d-flex gap-2 mb-3">
                                                 <button type="button" class="btn btn-outline-primary">
@@ -111,48 +75,10 @@ List of parsers
                                         </div>
                                     </div>
                                 </div>
-                                <!--</div>-->
                             </div>
                         </div>
                     </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" role="tab">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#accordion-1 .item-2" aria-expanded="false"
-                                    aria-controls="accordion-1 .item-2">
-                                100 most popular repository on GitHub
-                            </button>
-                        </h2>
-                        <div class="accordion-collapse collapse item-2" role="tabpanel">
-                            <div class="accordion-body">
-                                <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras
-                                    justo odio,
-                                    dapibus
-                                    ac
-                                    facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
-                                    metus.</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" role="tab">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#accordion-1 .item-3" aria-expanded="false"
-                                    aria-controls="accordion-1 .item-3">
-                                Accordion Item
-                            </button>
-                        </h2>
-                        <div class="accordion-collapse collapse item-3" role="tabpanel">
-                            <div class="accordion-body">
-                                <p class="mb-0">Nullam id dolor id nibh ultricies vehicula ut id elit. Cras
-                                    justo odio,
-                                    dapibus
-                                    ac
-                                    facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget
-                                    metus.</p>
-                            </div>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
