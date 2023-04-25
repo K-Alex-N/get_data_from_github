@@ -1,12 +1,17 @@
+import os
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
 
+
 app = Flask(__name__)
 app.config.from_mapping(
     SECRET_KEY='sfsdfw234sd23rwd23rwd23',
-    SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/flask"
+    SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/flask",
+    SCHEDULER_API_ENABLED=True,
+    SCHEDULER_TIMEZONE = "Europe/London",
 )
 db = SQLAlchemy()
 db.init_app(app)
@@ -39,12 +44,11 @@ with app.app_context():
 
 # APScheduler
 scheduler = APScheduler()
-scheduler.api_enabled = True
 scheduler.init_app(app)
 scheduler.start()
 
 
-@scheduler.task('interval', seconds=30)
+@scheduler.task('interval', seconds=10000)
 # @scheduler.task('cron', minute=0, hour=0, day='*')
 def everyday_parsing():
     with scheduler.app.app_context():
@@ -53,10 +57,13 @@ def everyday_parsing():
             # отправлять алерт на почту
             pass
 
-# @scheduler.task('cron', hour=23, minute=59, day='*')
-# def everyday_delete_JSONs():
-#     with scheduler.app.app_context():
-#         pass
+@scheduler.task('cron', hour=23, minute=59, day='*')
+# @scheduler.task('interval', seconds=2)
+def everyday_delete_JSONs():
+    with scheduler.app.app_context():
+        json_path = "app/data/json"
+        for f in os.listdir(path=json_path):
+            os.remove(json_path + '/' + f)
 
 
 #     # app.config.from_pyfile('config.py', silent=True)

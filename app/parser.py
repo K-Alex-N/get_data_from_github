@@ -1,8 +1,9 @@
 import datetime
 import json
-
+import os
 import requests
-from flask import Blueprint, redirect, url_for, send_from_directory, send_file
+
+from flask import Blueprint, redirect, url_for, send_file
 from flask import request
 from flask import flash
 from flask import render_template
@@ -16,39 +17,33 @@ parser = Blueprint('parser', __name__)
 
 
 @parser.route('/')
-# @login_required - нельзя. любой приходящий должен увидеть список
 def parcing_lists_page():
     pull_requests = PullRequest.query.all()
     url = Url.query.all()
     return render_template('app/parsing_lists.html', user=current_user, pull_requests=pull_requests, url=url)
 
-
-# @parser.route('/<int:parcing_id>')
-# def parcing_data_page(parcing_id):
-#     return render_template('parsing_lists.html')
-
 def parse_urls(urls):
     for u in urls:
+        # Parse data
+        r = requests.get(u.url)
+        soup = bs(r.text, "lxml")
+        stars = soup.find(id="repo-stars-counter-star")
+        if stars: # если не найдены "stars" то значит не верный URL
+            stars = stars['title'].replace(',', '')
+            fork = soup.find(id="repo-network-counter")['title'].replace(',', '')
+            last_commit = soup.find('relative-time')['datetime']
+
+            r = requests.get(u.url + '/tags')
+            soup = bs(r.text, "lxml")
+            last_release = soup.find('relative-time')
+            if last_release:
+                last_release = last_release['datetime']
+        else:
+            # не верный url
+            stars, fork, last_commit, last_release = 'Error!', 'Error!', 'Error!', 'Error!'
+
+        # save data in DB
         try:
-            # Parse data
-            r = requests.get(u.url)
-            if '404 ' not in r.text:
-                soup = bs(r.text, "lxml")
-                stars = soup.find(id="repo-stars-counter-star")['title'].replace(',', '')
-                fork = soup.find(id="repo-network-counter")['title'].replace(',', '')
-                last_commit = soup.find('relative-time')['datetime']
-
-                r = requests.get(u.url + '/tags')
-                soup = bs(r.text, "lxml")
-                last_release = soup.find('relative-time')
-                if last_release:
-                    last_release = last_release['datetime']
-            else:
-                # не верный url
-                # пока так
-                stars, fork, last_commit, last_release = 'Error!', 'Error!', 'Error!', 'Error!'
-
-            # save data in DB
             parse_data = ParseData(url_id=u.id,
                                    added_at=datetime.datetime.now(),
                                    stars=stars,
@@ -63,22 +58,24 @@ def parse_urls(urls):
             return False
     return True
 
-def check_data(name, links):
+
+def check_data(name, links: set):
     if not name:
         return 'Введите название'
     elif not links:
         return 'Введите ссылки на репозитории'
     else:
-        for link in links.split():
+        for link in links:
             if 'github.com' not in link:
                 return 'Введите полную ссылку на репозиторий (пример https://github.com/django/django)'
+
 
 @parser.route('/add', methods=['POST', 'GET'])
 @login_required
 def add_new_parcing():
     if request.method == 'POST':
         name = request.form.get('name')
-        links = request.form.get('links')
+        links = set(request.form.get('links').split())
         frequency = int(request.form['frequency'])
 
         error = check_data(name, links)
@@ -96,7 +93,7 @@ def add_new_parcing():
                 db.session.add(pull_request)
                 db.session.flush()
 
-                for link in links.split():
+                for link in links:
                     url = Url(
                         pull_request_id=pull_request.id,
                         url=link
@@ -119,51 +116,35 @@ def add_new_parcing():
     return render_template('app/add_new_parsing.html', user=current_user)
 
 
-@parser.route('/download_json/<int:pull_request_id>', methods=['POST', 'GET'])
-def download_json(pull_request_id):
-    """
-    название файла это pull_request.id
+@parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])
+def download_json(pull_request_id, file_name):
+    file_path = f"app/data/json/{pull_request_id}"
+    if not os.path.isfile(file_path):
+        # get data from DB. Put data in a dictionary
+        d = {}
+        urls_id = Url.query.filter_by(pull_request_id=pull_request_id)
+        for u in urls_id:
+            d[u.id] = {}
+            data_by_url_id = ParseData.query.filter_by(url_id=u.id)
+            for data in data_by_url_id:
+                d[u.id][data.added_at] = {
+                    'stars': data.stars,
+                    'fork': data.fork,
+                    'last_commit': data.last_commit,
+                    'last_release': data.last_release}
 
-    data = {
-        url: {
-            date: {
-                parse_data
-            },
-            ...
-        ...
-        }
+        # create JSON file
+        with open(file_path, "w") as f:
+            json.dump(d, f)
 
-    data = {
-        "https://github.com/django/django": {
-            "2023-04-25 11:10:01.535551": {
-                'stars': 70048,
-                'fork': 29103,
-                'last_commit': "2023-04-25T07:30:52Z",
-                'last_release': "2023-04-05T05:53:22Z"
-            }
-        }
-    """
-
-    # get data from DB and put it in dictionary
-    d = {}
-    urls_id = Url.query.filter_by(pull_request_id=pull_request_id)
-    for u in urls_id:
-        d[u.id] = {}
-        data_by_url_id = ParseData.query.filter_by(url_id=u.id)
-        for data in data_by_url_id:
-            d[u.id][data.added_at] = {
-                'stars': data.stars,
-                'fork': data.fork,
-                'last_commit': data.last_commit,
-                'last_release': data.last_release
-            }
-
-    # create JSON file
-    file_path = f"app/data/{pull_request_id}.json"
-    with open(file_path, "w") as f:
-        json.dump(d, f)
-
-
-    return send_file(f'data/{pull_request_id}.json',
+    # print(file_name)
+    # Sent file
+    return send_file(f'data/json/{pull_request_id}',
                      as_attachment=True,
-                     download_name='parsed_data_from_' + str(datetime.date.today()) + '.json')
+                     download_name=f'{file_name} {str(datetime.date.today())}.json'
+                     )
+
+
+@parser.route('/how_to_use')
+def how_to_use():
+    return render_template('app/how_to_use.html', user=current_user)

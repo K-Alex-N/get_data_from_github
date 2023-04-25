@@ -4,28 +4,6 @@ from app.models import Url, ParseData
 
 
 def create_JSON():
-    """
-    название файла это pull_request.id
-
-    data = {
-        url: {
-            date: {
-                parse_data
-            },
-            next_date: {},
-        next_url: {}
-        }
-
-    data = {
-        "https://github.com/django/django": {
-            "2023-04-25 11:10:01.535551": {
-                'stars': 70048,
-                'fork': 29103,
-                'last_commit': "2023-04-25T07:30:52Z",
-                'last_release': "2023-04-05T05:53:22Z"
-            }
-        }
-    """
 
     # get data from DB
     d = {}
