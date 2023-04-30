@@ -1,6 +1,4 @@
-import json
-
-from app.models import Url, ParseData
+from app.store.db.models import Url, ParseData
 
 
 def create_JSON():

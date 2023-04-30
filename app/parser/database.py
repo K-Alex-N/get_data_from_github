@@ -2,7 +2,7 @@ from typing import Optional
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, Integer, VARCHAR, create_engine
 
-from config import setup_config, Config
+from config.config import setup_config, Config
 
 
 class Application:

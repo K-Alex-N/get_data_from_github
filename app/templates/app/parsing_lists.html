@@ -10,7 +10,16 @@ List of parsers
         <div class="card shadow-lg mb-5">  <!--обводка-->
             <div class="card-body p-sm-5"> <!--отступы от обводки-->
                 <!--    Аккардион    -->
-
+                <!--                <div class="card-body p-sm-7">-->
+                <div class="row justify-content-end mb-3">
+                    <div class="col-md-auto text-end">
+                        {% if user.is_authenticated %}
+                        <a href="/logout" class="btn btn-outline-warning me-2" type="button">My parsers</a>
+                        {% endif %}
+                        <a href="/add" class="btn btn-outline-success" type="button">Add parser</a>
+                    </div>
+                </div>
+                <!--                </div>-->
                 <div class="accordion" role="tablist" id="accordion-1">
                     {% for pr in pull_requests %}
                     <div class="accordion-item">
@@ -22,6 +31,7 @@ List of parsers
                                 {{pr.name}}
                             </button>
                         </h2>
+                        <!-- Тело аккардиона -->
                         <div class="accordion-collapse collapse item-{{ pr.id }}" role="tabpanel">
                             <div class="accordion-body">
                                 <div class="container">
@@ -51,7 +61,8 @@ List of parsers
                                                  -->
                                             </ul>
                                             <div class="d-flex gap-2 mb-3">
-                                                <a href="{{ url_for('parser.download_json', pull_request_id=pr.id, file_name=pr.name) }}" type="button" class="btn btn-outline-primary">
+                                                <a href="{{ url_for('parser.download_json', pull_request_id=pr.id, file_name=pr.name) }}"
+                                                   type="button" class="btn btn-outline-primary">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                          height="24"
                                                          fill="currentColor"
@@ -62,6 +73,10 @@ List of parsers
                                                     </svg>
                                                     .JSON
                                                 </a>
+                                                <button type="button" class="btn btn-outline-danger" data-toggle="modal"
+                                                        data-target="#exampleModalCenter">
+                                                    Delete
+                                                </button>
                                                 <!--<button type="button" class="btn btn-secondary">-->
                                                 <!--
                                                 <button type="button" class="btn btn-outline-warning">
@@ -84,6 +99,23 @@ List of parsers
                     </div>
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+            </div>
+            <div class="modal-body">
+            Все данные будут удаленны безвозвратно.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger">Yes. Delete it.</button>
             </div>
         </div>
     </div>

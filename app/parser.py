@@ -10,8 +10,9 @@ from flask import render_template
 from flask_login import current_user, login_required
 from bs4 import BeautifulSoup as bs
 
-from app.models import PullRequest, Url, ParseData
+from app.store.db.models import PullRequest, Url, ParseData
 from app.run_app import db
+from app.store.parser.accessor import create_pull_request
 
 parser = Blueprint('parser', __name__)
 
@@ -52,6 +53,7 @@ def parse_urls(urls):
                                    last_release=last_release)
             db.session.add(parse_data)
             db.session.commit()
+            # db.session.close()
 
         except Exception as e:
             print(e)
@@ -76,52 +78,34 @@ def add_new_parcing():
     if request.method == 'POST':
         name = request.form.get('name')
         links = set(request.form.get('links').split())
-        frequency = int(request.form['frequency'])
+        # frequency = int(request.form['frequency'])
 
         error = check_data(name, links)
         if error:
             flash(error, category='error')
         else:
-            try:
-                # запись данных в БД
-                pull_request = PullRequest(
-                    name=name,
-                    user_id=current_user.id,
-                    start_date=datetime.datetime.now(),  # вот это можно перенести прямо в класс!!!
-                    frequency=frequency,
-                )
-                db.session.add(pull_request)
-                db.session.flush()
-
-                for link in links:
-                    url = Url(
-                        pull_request_id=pull_request.id,
-                        url=link
-                    )
-                    db.session.add(url)
-                db.session.commit()
-
+            pull_request_id = create_pull_request(name, links)
+            if pull_request_id:
                 # первый парсинг
-                urls = Url.query.filter_by(pull_request_id=pull_request.id).all()
+                urls = Url.query.filter_by(pull_request_id=pull_request_id).all()
                 if parse_urls(urls):
+                    flash('Парсер успешно добавлен. Рекомендуется проверить .json файл через 1-2 минуты.', category='success')
                     # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
                     # return redirect(url_for("parse_details", id=pull_request.id))
                     return redirect(url_for('parser.parcing_lists_page', user=current_user))
                 flash('Ошибка запуска парсера', category='error')
-
-            except:
-                db.session.rollback()
-                flash('Обшибка добавления в БД', category='error')
 
     return render_template('app/add_new_parsing.html', user=current_user)
 
 
 @parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])
 def download_json(pull_request_id, file_name):
-    file_path = f"app/data/json/{pull_request_id}"
+    file_path = f"app/store/data/json/{pull_request_id}"
     if not os.path.isfile(file_path):
         # get data from DB. Put data in a dictionary
         d = {}
+        # TODO ПЕРЕПИСАТЬ через db.session.execute(db.select(...).where...)!!!
+        # TODO try_except function
         urls_id = Url.query.filter_by(pull_request_id=pull_request_id)
         for u in urls_id:
             d[u.id] = {}
@@ -137,12 +121,16 @@ def download_json(pull_request_id, file_name):
         with open(file_path, "w") as f:
             json.dump(d, f)
 
-    # print(file_name)
     # Sent file
-    return send_file(f'data/json/{pull_request_id}',
+    return send_file(f'store/data/json/{pull_request_id}',
                      as_attachment=True,
                      download_name=f'{file_name} {str(datetime.date.today())}.json'
                      )
+
+@parser.route('/delete/<int:pull_request_id>', methods=['POST', 'GET'])
+@login_required
+def delete_parser(pull_request_id):
+    pass
 
 
 @parser.route('/how_to_use')

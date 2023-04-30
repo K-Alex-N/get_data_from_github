@@ -37,7 +37,7 @@ def load_user(id):
 
 
 # create DB
-from app.models import *
+from app.store.db.models import *
 
 with app.app_context():
     db.create_all()
