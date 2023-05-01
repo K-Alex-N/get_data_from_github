@@ -9,9 +9,10 @@ from flask_login import login_user
 from flask_login import current_user
 from flask_login import logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy import select
 
-from app.store.db.models_w_flsak_alchemy import User
-from app.run_app import db
+from app.store.db import session, try_except_session
+from app.store.db.models import User
 
 auth = Blueprint('auth', __name__)
 
@@ -22,17 +23,16 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User.query.filter_by(username=username).first()
-        print(user)
+        user = session.scalar(select(User).where(User.username == username))
         if user:
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('parser.parcing_lists_page', user=current_user))
+                return redirect(next or url_for('parser.parcing_lists_page', user=current_user))
             else:
                 flash('Incorrect password, try again', category='error')
         else:
-            flash('Usermane does not exist', category='error')
+            flash('Username does not exist', category='error')
 
     return render_template('auth/login.html', user=current_user)
 
@@ -55,8 +55,8 @@ def register():
         elif password != password_repeat:
             error = 'Passwords are not the same'
         else:
-            user_from_db = User.query.filter_by(username=username).first()
-            email_from_db = User.query.filter_by(email=email).first()
+            user_from_db = session.scalar(select(User).where(User.username == username))
+            email_from_db = session.scalar(select(User).where(User.email == email))
 
             if user_from_db:
                 error = 'Username already exists'
@@ -78,8 +78,8 @@ def register():
             new_user = User(username=username,
                             password=generate_password_hash(password, method='sha256'),
                             email=email)
-            db.session.add(new_user)
-            db.session.commit()
+            with try_except_session() as session:
+                session.add(new_user)
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
             return redirect(url_for('parser.parcing_lists_page', user=current_user))

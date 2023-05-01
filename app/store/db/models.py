@@ -14,7 +14,7 @@ class User(Base, UserMixin):
     username:           Mapped[str]
     password:           Mapped[str]
     email:              Mapped[str]     # may be put as Optional ?
-    is_email_confirmed: Mapped[bool] = False
+    is_email_confirmed: Mapped[bool] = mapped_column(default=False)
 
     # pill_requests = db.relationship('PullRequest')
 

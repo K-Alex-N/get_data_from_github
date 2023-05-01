@@ -11,7 +11,7 @@ Add new scrapper
             <div class="card shadow-lg mb-5">  <!--обводка-->
                 <div class="card-body p-sm-5"> <!--отступы от обводки-->
                     <h2 class="text-center text-dark mb-4">Create GitHub scrapper</h2>
-                    <form action="/add" method="post">
+                    <form method="post"> <!-- нельзя добавлять action="/add" тк потеряется "next=%2Fsettings%2f". Если поле удалено то оно перенаправлятся на туже страницу-->
                         <strong class="text-dark">Scrapper name</strong>
                         <div class="mb-3"><input class="form-control" type="text" id="name" name="name"
                                                  placeholder=""></div>

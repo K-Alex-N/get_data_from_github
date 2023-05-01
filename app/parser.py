@@ -9,23 +9,23 @@ from flask import flash
 from flask import render_template
 from flask_login import current_user, login_required
 from bs4 import BeautifulSoup as bs
+from sqlalchemy import select
 
-from app.store.db.models_w_flsak_alchemy import PullRequest, Url, ParseData
-from app.run_app import db
-from app.store.parser.accessor import create_pull_request, get_urls_by_pull_request_id
+from app.store.db import session, try_except_session
+from app.store.db.models import PullRequest, Url, ParseData
+from app.store.parser.accessor import create_pull_request, create_dict_by_pull_request_id
 
 parser = Blueprint('parser', __name__)
 
 
 @parser.route('/')
 def parcing_lists_page():
-    pull_requests = PullRequest.query.all()
-    url = Url.query.all()
+    pull_requests = session.scalars(select(PullRequest)).all()
+    url = session.scalars(select(Url)).all()
     return render_template('app/parsing_lists.html', user=current_user, pull_requests=pull_requests, url=url)
 
 def parse_urls(urls):
     for u in urls:
-        # Parse data
         r = requests.get(u.url)
         soup = bs(r.text, "lxml")
         stars = soup.find(id="repo-stars-counter-star")
@@ -40,24 +40,19 @@ def parse_urls(urls):
             if last_release:
                 last_release = last_release['datetime']
         else:
-            # не верный url
             stars, fork, last_commit, last_release = 'Error!', 'Error!', 'Error!', 'Error!'
 
-        # save data in DB
-        try:
-            parse_data = ParseData(url_id=u.id,
-                                   added_at=datetime.datetime.now(),
-                                   stars=stars,
-                                   fork=fork,
-                                   last_commit=last_commit,
-                                   last_release=last_release)
-            db.session.add(parse_data)
-            db.session.commit()
-            # db.session.close()
+        # save files in DB
+        parse_data = ParseData(url_id=u.id,
+                               added_at=datetime.datetime.now(),
+                               stars=stars,
+                               fork=fork,
+                               last_commit=last_commit,
+                               last_release=last_release)
 
-        except Exception as e:
-            print(e)
-            return False
+        with try_except_session() as session:
+            session.add(parse_data)
+
     return True
 
 
@@ -78,7 +73,6 @@ def add_new_parcing():
     if request.method == 'POST':
         name = request.form.get('name')
         links = set(request.form.get('links').split())
-        # frequency = int(request.form['frequency'])
 
         error = check_data(name, links)
         if error:
@@ -86,12 +80,10 @@ def add_new_parcing():
         else:
             pull_request_id = create_pull_request(name, links)
             if pull_request_id:
-                # первый парсинг
-                urls = get_urls_by_pull_request_id(pull_request_id)
-
-
+                # запуск первого парсинга
+                urls = session.scalars(select(Url).where(Url.pull_request_id == pull_request_id)).all()
                 if parse_urls(urls):
-                    flash('Парсер успешно добавлен. Рекомендуется проверить .json файл через 1-2 минуты.', category='success')
+                    flash('Задание на парсинг успешно добавлено. Первый парсинг запущен. Рекомендуется проверить результат (.json файл или почту) через 1-2 минуты.', category='success')
                     # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
                     # return redirect(url_for("parse_details", id=pull_request.id))
                     return redirect(url_for('parser.parcing_lists_page', user=current_user))
@@ -104,29 +96,14 @@ def add_new_parcing():
 
 @parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])
 def download_json(pull_request_id, file_name):
-    file_path = f"app/store/data/json/{pull_request_id}"
+    # may be change path by clever way (os.path)
+    file_path = f"app/store/files/json/{pull_request_id}"
     if not os.path.isfile(file_path):
-        # get data from DB. Put data in a dictionary
-        d = {}
-        # TODO ПЕРЕПИСАТЬ через db.session.execute(db.select(...).where...)!!!
-        # TODO try_except function
-        urls_id = Url.query.filter_by(pull_request_id=pull_request_id)
-        for u in urls_id:
-            d[u.id] = {}
-            data_by_url_id = ParseData.query.filter_by(url_id=u.id)
-            for data in data_by_url_id:
-                d[u.id][data.added_at] = {
-                    'stars': data.stars,
-                    'fork': data.fork,
-                    'last_commit': data.last_commit,
-                    'last_release': data.last_release}
-
-        # create JSON file
+        d = create_dict_by_pull_request_id(pull_request_id)
         with open(file_path, "w") as f:
             json.dump(d, f)
 
-    # Sent file
-    return send_file(f'store/data/json/{pull_request_id}',
+    return send_file(f'store/files/json/{pull_request_id}',
                      as_attachment=True,
                      download_name=f'{file_name} {str(datetime.date.today())}.json'
                      )
