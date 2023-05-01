@@ -1,4 +1,4 @@
-from app.store.db.models import Url, ParseData
+from app.store.db.models_w_flsak_alchemy import Url, ParseData
 
 
 def create_JSON():

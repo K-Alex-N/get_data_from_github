@@ -2,7 +2,6 @@ import os
 
 from flask import Flask
 from flask_login import LoginManager
-from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
 
 
@@ -13,8 +12,8 @@ app.config.from_mapping(
     SCHEDULER_API_ENABLED=True,
     SCHEDULER_TIMEZONE = "Europe/London",
 )
-db = SQLAlchemy()
-db.init_app(app)
+# db = SQLAlchemy()
+# db.init_app(app)
 
 # Blueprint
 from app.parser import parser, parse_urls
@@ -37,7 +36,7 @@ def load_user(id):
 
 
 # create DB
-from app.store.db.models import *
+from app.store.db.models_w_flsak_alchemy import *
 
 with app.app_context():
     db.create_all()

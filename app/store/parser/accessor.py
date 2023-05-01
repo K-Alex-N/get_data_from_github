@@ -4,7 +4,7 @@ from flask import flash
 from flask_login import current_user
 
 from app.run_app import db, app
-from app.store.db.models import PullRequest, Url
+from app.store.db.models_w_flsak_alchemy import PullRequest, Url
 
 
 def create_pull_request(name, links):
@@ -26,4 +26,12 @@ def create_pull_request(name, links):
             return pull_request.id
 
         except:
-            flash('Обшибка добавления в БД', category='error')
+            pass
+
+
+def get_urls_by_pull_request_id(pull_request_id):
+    # urls = Url.query.filter_by(pull_request_id=pull_request_id).all()
+    # with app.app_context():
+    #     try:
+    #         urls = execute.scalar(select(Url).where(Url.pull_request_id=pull_request_id))
+    pass

@@ -1,63 +1,47 @@
+from datetime import datetime
+
 from flask_login import UserMixin
+from sqlalchemy import func, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column
 
-from app.run_app import db
-
-
-# from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-# app.db = SQLAlchemy() - Pycharm на это ругается. хотя я не проверял правда ли будет ошибка
-# для миграций подключить Alembic - https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/quickstart/#create-the-tables
+from app.store.db import Base
 
 
-class User(db.Model, UserMixin):  # Затем убрать все db.что-то там за счет прямого импорта.
-    # Смотри -- https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/models/#defining-models
-    """
-    checked in business-logic
-        username UNIQUE and NOT NULL
-        password NOT NULL
-        email UNIQUE and NOT NULL
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String)
-    password = db.Column(db.String)
-    email = db.Column(db.String)
-    is_email_confirmed = db.Column(db.Boolean, default=False)
+class User(Base, UserMixin):
+    __tablename__ = "user"
+
+    id:                 Mapped[int] = mapped_column(primary_key=True)
+    username:           Mapped[str]
+    password:           Mapped[str]
+    email:              Mapped[str]     # may be put as Optional ?
+    is_email_confirmed: Mapped[bool] = False
 
     # pill_requests = db.relationship('PullRequest')
 
+class PullRequest(Base):
+    __tablename__ = "pull_request"
 
-class PullRequest(db.Model):
-    """
-    checked in business-logic
-        name NOT NULL
-        start_date NOT NULL
-    """
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    user_id = db.Column(db.ForeignKey(User.id))
-    start_date = db.Column(db.DateTime)
-    frequency = db.Column(db.Integer)
-    # actual_qty = db.Column(db.Integer, default=0)
+    id:                 Mapped[int] = mapped_column(primary_key=True)
+    name:               Mapped[str]
+    user_id =           mapped_column(ForeignKey("user.id"))   # may we put here "User.id" ?
+    start_date:         Mapped[datetime] = mapped_column(insert_default=func.now())
 
+class Url(Base):
+    __tablename__ = "url"
 
-class Url(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    pull_request_id = db.Column(db.ForeignKey(PullRequest.id))
-    url = db.Column(db.String, nullable=False)
+    id:                 Mapped[int] = mapped_column(primary_key=True)
+    pull_request_id =   mapped_column(ForeignKey("pull_request.id"))   # may we put here "PullRequest.id" ?
+    url:                Mapped[str]
 
+class ParseData(Base):
+    __tablename__ = "parse_data"
 
-class ParseData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url_id = db.Column(db.ForeignKey(Url.id))
-    added_at = db.Column(db.String, nullable=False)
-    stars = db.Column(db.String, nullable=False)
-    fork = db.Column(db.String, nullable=False)
-    last_commit = db.Column(db.String)
-    last_release = db.Column(db.String)
+    id:                 Mapped[int] = mapped_column(primary_key=True)
+    url_id =            mapped_column(ForeignKey("url.id"))           # Url.id
+    added_at:           Mapped[datetime] = mapped_column(insert_default=func.now())
+    stars:              Mapped[str]
+    fork:               Mapped[str]
+    last_commit:        Mapped[str]
+    last_release:       Mapped[str]
 
 
-"""
-DROP TABLE parse_data;
-DROP TABLE url;
-DROP TABLE pull_request;
-DROP TABLE "user";
-"""

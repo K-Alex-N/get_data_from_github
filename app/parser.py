@@ -10,9 +10,9 @@ from flask import render_template
 from flask_login import current_user, login_required
 from bs4 import BeautifulSoup as bs
 
-from app.store.db.models import PullRequest, Url, ParseData
+from app.store.db.models_w_flsak_alchemy import PullRequest, Url, ParseData
 from app.run_app import db
-from app.store.parser.accessor import create_pull_request
+from app.store.parser.accessor import create_pull_request, get_urls_by_pull_request_id
 
 parser = Blueprint('parser', __name__)
 
@@ -87,13 +87,17 @@ def add_new_parcing():
             pull_request_id = create_pull_request(name, links)
             if pull_request_id:
                 # первый парсинг
-                urls = Url.query.filter_by(pull_request_id=pull_request_id).all()
+                urls = get_urls_by_pull_request_id(pull_request_id)
+
+
                 if parse_urls(urls):
                     flash('Парсер успешно добавлен. Рекомендуется проверить .json файл через 1-2 минуты.', category='success')
                     # дб пересылка на страницу пользователя, а точнее на страницу данного задания на парсинг в странице пользователя
                     # return redirect(url_for("parse_details", id=pull_request.id))
                     return redirect(url_for('parser.parcing_lists_page', user=current_user))
-                flash('Ошибка запуска парсера', category='error')
+                flash('Ошибка запуска первого парсинга', category='error')
+            else:
+                flash('Обшибка добавления в БД', category='error')
 
     return render_template('app/add_new_parsing.html', user=current_user)
 

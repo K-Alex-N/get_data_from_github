@@ -10,7 +10,7 @@ from flask_login import current_user
 from flask_login import logout_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.store.db.models import User
+from app.store.db.models_w_flsak_alchemy import User
 from app.run_app import db
 
 auth = Blueprint('auth', __name__)
