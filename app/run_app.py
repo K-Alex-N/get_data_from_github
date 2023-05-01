@@ -6,16 +6,14 @@ from flask_apscheduler import APScheduler
 from sqlalchemy import select
 
 from app.store.db import User, session, Url
+from config.config import PATH_TO_JSON
 
 app = Flask(__name__)
 app.config.from_mapping(
     SECRET_KEY='sfsdfw234sd23rwd23rwd23',
-    # SQLALCHEMY_DATABASE_URI="postgresql+psycopg2://kts_user:kts_pass@localhost:5432/flask",
     SCHEDULER_API_ENABLED=True,
     SCHEDULER_TIMEZONE = "Europe/London",
 )
-# db = SQLAlchemy()
-# db.init_app(app)
 
 # Blueprint
 from app.parser import parser, parse_urls
@@ -31,21 +29,9 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
-
 @login_manager.user_loader
 def load_user(id):
-    # with session_scope() as session:
-        # user = session.scalar(select(User).where(User.id == int(id)))
-        # return user
     return session.scalar(select(User).where(User.id == int(id)))
-    # return User.query.get(int(id))
-
-
-# # create DB
-# from app.store.db.models import *
-#
-# with app.app_context():
-#     db.create_all()
 
 # APScheduler
 scheduler = APScheduler()
@@ -66,9 +52,8 @@ def everyday_parsing():
 # @scheduler.task('interval', seconds=2)
 def everyday_delete_JSONs():
     with scheduler.app.app_context():
-        json_path = "app/files/json"
-        for f in os.listdir(path=json_path):
-            os.remove(json_path + '/' + f)
+        for f in os.listdir(path=PATH_TO_JSON):
+            os.remove(PATH_TO_JSON + '/' + f)
 
 
 #     # app.config.from_pyfile('config.py', silent=True)

@@ -3,7 +3,7 @@ import json
 import os
 import requests
 
-from flask import Blueprint, redirect, url_for, send_file
+from flask import Blueprint, redirect, url_for, send_file, send_from_directory
 from flask import request
 from flask import flash
 from flask import render_template
@@ -14,6 +14,7 @@ from sqlalchemy import select
 from app.store.db import session, try_except_session
 from app.store.db.models import PullRequest, Url, ParseData
 from app.store.parser.accessor import create_pull_request, create_dict_by_pull_request_id
+from config.config import PATH_TO_JSON
 
 parser = Blueprint('parser', __name__)
 
@@ -39,12 +40,10 @@ def parse_urls(urls):
             last_release = soup.find('relative-time')
             if last_release:
                 last_release = last_release['datetime']
-        else:
+        else: # пока не верный url обозначаем так
             stars, fork, last_commit, last_release = 'Error!', 'Error!', 'Error!', 'Error!'
 
-        # save files in DB
         parse_data = ParseData(url_id=u.id,
-                               added_at=datetime.datetime.now(),
                                stars=stars,
                                fork=fork,
                                last_commit=last_commit,
@@ -96,23 +95,24 @@ def add_new_parcing():
 
 @parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])
 def download_json(pull_request_id, file_name):
-    # may be change path by clever way (os.path)
-    file_path = f"app/store/files/json/{pull_request_id}"
+    file_path = os.path.join(PATH_TO_JSON, str(pull_request_id))
     if not os.path.isfile(file_path):
         d = create_dict_by_pull_request_id(pull_request_id)
         with open(file_path, "w") as f:
             json.dump(d, f)
 
-    return send_file(f'store/files/json/{pull_request_id}',
-                     as_attachment=True,
-                     download_name=f'{file_name} {str(datetime.date.today())}.json'
-                     )
+    return send_from_directory(PATH_TO_JSON, str(pull_request_id),
+                               as_attachment=True,
+                               download_name=f'{file_name} {str(datetime.date.today())}.json'
+                               )
 
 @parser.route('/delete/<int:pull_request_id>', methods=['POST', 'GET'])
 @login_required
 def delete_parser(pull_request_id):
-    pass
-
+    with try_except_session() as session:
+        pull_request = session.scalar(select(PullRequest).where(PullRequest.id == pull_request_id))
+        session.delete(pull_request)
+    return parcing_lists_page()
 
 @parser.route('/how_to_use')
 def how_to_use():

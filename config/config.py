@@ -1,7 +1,17 @@
-import os
+from os import path, curdir
 from dataclasses import dataclass
 import yaml
 
+# ----------------------------------- #
+# constants
+# ----------------------------------- #
+
+# если запускать это файл то путь будет не верный, это нормально тк запускается main
+PATH_TO_JSON = path.join(path.abspath(curdir), 'app', 'store', 'json_files')
+
+# ----------------------------------- #
+#
+# ----------------------------------- #
 
 @dataclass
 class DatabaseConfig:

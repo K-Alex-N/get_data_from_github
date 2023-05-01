@@ -73,10 +73,10 @@ List of parsers
                                                     </svg>
                                                     .JSON
                                                 </a>
-                                                <button type="button" class="btn btn-outline-danger" data-toggle="modal"
-                                                        data-target="#exampleModalCenter">
+                                                <a type="button" class="btn btn-outline-danger" data-toggle="modal"
+                                                        data-target="#exampleModalCenter{{pr.id}}">
                                                     Delete
-                                                </button>
+                                                </a>
                                                 <!--<button type="button" class="btn btn-secondary">-->
                                                 <!--
                                                 <button type="button" class="btn btn-outline-warning">
@@ -97,27 +97,28 @@ List of parsers
                             </div>
                         </div>
                     </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModalCenter{{pr.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
+                                </div>
+                                <div class="modal-body">
+                                Все данные будут удаленны безвозвратно.
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <a href="{{ url_for('parser.delete_parser', pull_request_id=pr.id) }}" type="button" class="btn btn-danger">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- Modal -->
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Вы уверены?</h5>
-            </div>
-            <div class="modal-body">
-            Все данные будут удаленны безвозвратно.
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger">Yes. Delete it.</button>
-            </div>
-        </div>
-    </div>
-</div>
+
 {% endblock %}
