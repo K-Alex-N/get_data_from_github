@@ -5,6 +5,7 @@ from flask_login import LoginManager
 from flask_apscheduler import APScheduler
 from sqlalchemy import select
 
+from app.parser.utils import parse_urls
 from app.store.db import User, session, Url
 from config.config import PATH_TO_JSON
 
@@ -16,8 +17,8 @@ app.config.from_mapping(
 )
 
 # Blueprint
-from app.parser import parser, parse_urls
-from app.auth import auth
+from app.parser.routes import parser
+from app.auth.routes import auth
 
 app.register_blueprint(parser, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
@@ -26,7 +27,6 @@ app.register_blueprint(auth, url_prefix='/')
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
-
 
 @login_manager.user_loader
 def load_user(id):
@@ -57,15 +57,11 @@ def everyday_delete_JSONs():
             os.remove(PATH_TO_JSON + '/' + f)
 
 
-# -------------------------------- #
 # Error handlers
-# -------------------------------- #
 @app.errorhandler(500)
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('error/page404.html'), 404
-
-
 
 #     # app.config.from_pyfile('config.py', silent=True)
 #

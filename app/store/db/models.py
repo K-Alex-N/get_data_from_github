@@ -60,6 +60,5 @@ class ParseData(Base):
 DROP TABLE parse_data;
 DROP TABLE url;
 DROP TABLE pull_request;
-
 DROP TABLE "user";
 """
