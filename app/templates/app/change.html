@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Change parser
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-center">
+        <div class="col-5">
+            <div class="card shadow-lg mb-5">
+                <div class="card-body p-sm-5">
+                    <h2 class="text-center text-dark mb-4">Change parser</h2>
+                    <form method="post">
+                        <strong class="text-dark">Scrapper name</strong>
+                        <div class="mb-3">
+                            <input class="form-control" type="text" id="name" name="name" value="{{ pr_name }}">
+                        </div>
+                        <div><strong class="text-dark">Links</strong></div>
+                            Change, add or delete links below
+                        <div class="mb-3">
+                            <textarea class="form-control" id="message-2" name="links" rows="6"
+                                      placeholder="https://github.com/django/django https://github.com/pallets/flask">{{ links }}</textarea>
+                        </div>
+                        <button class="btn btn-primary d-block w-100" type="submit">Change</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

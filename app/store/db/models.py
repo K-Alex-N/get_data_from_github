@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from flask_login import UserMixin
 from sqlalchemy import func, ForeignKey
@@ -30,6 +30,8 @@ class PullRequest(Base):
     user:               Mapped['User'] = relationship(back_populates='pull_requests')
     urls:               Mapped[List['Url']] = relationship(back_populates='pull_request', cascade="all, delete-orphan")
 
+    def __repr__(self) -> str:
+        return f"PullRequest(id={self.id!r}, name={self.name!r}, user_id={self.user_id!r} etc...)"
 
 class Url(Base):
     __tablename__ = "url"
@@ -50,8 +52,14 @@ class ParseData(Base):
     stars:              Mapped[str]
     fork:               Mapped[str]
     last_commit:        Mapped[str]
-    last_release:       Mapped[str]
+    last_release:       Mapped[Optional[str]]
 
     url:                Mapped['Url'] = relationship(back_populates='parse_data')
 
+"""
+DROP TABLE parse_data;
+DROP TABLE url;
+DROP TABLE pull_request;
 
+DROP TABLE "user";
+"""

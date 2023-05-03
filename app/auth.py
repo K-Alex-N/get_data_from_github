@@ -28,7 +28,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(next or url_for('parser.parcing_lists_page', user=current_user))
+                return redirect(url_for('parser.parcing_lists_page', user=current_user))
             else:
                 flash('Incorrect password, try again', category='error')
         else:
