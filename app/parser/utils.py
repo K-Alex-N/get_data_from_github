@@ -9,39 +9,56 @@ from sqlalchemy import select
 
 from app.store.db import session, try_except_session
 from app.store.db.models import PullRequest, Url, ParseData
-from config.config import PATH_TO_JSON
+from config.config import JSON_DIR
 
 
 # ---------------------------------------------------------------- #
-# pull request management
+# home page
 # ---------------------------------------------------------------- #
 
-def add_or_change(request, type, pull_request_id: int = 0):
+def get_home_data():
+    pull_requests = session.scalars(select(PullRequest)).all()
+    url = session.scalars(select(Url)).all()
+    data = []
+    for pr in pull_requests:
+        data.append([pr, [u for u in url if u.pull_request_id == pr.id]])
+
+    return data
+
+
+def add_pull_request(request):
     name = request.form.get('name')
     set_links = set(request.form.get('links').split())
 
-    error = check_data(name, set_links)
-    if error:
-        flash(error, category='error')
-    else:
-        if type == 'add':
-            pull_request_id = create_new_parser(name, set_links)
-        elif type == 'change':
-            pull_request_id = change_parser(name, set_links, pull_request_id)
-
+    if check_data(name, set_links):
+        pull_request_id = create_new_parser(name, set_links)
         if pull_request_id:
-            run_first_parsing(pull_request_id, type)
+            run_first_parsing(pull_request_id, msg='добавлено')
 
 
-def check_data(name, links: set):
+def change_pull_request(request, pull_request_id):
+    name = request.form.get('name')
+    set_links = set(request.form.get('links').split())
+
+    if check_data(name, set_links):
+        if change_parser(name, set_links, pull_request_id):
+            run_first_parsing(pull_request_id, msg='изменено')
+
+def check_data(name, set_links):
     if not name:
-        return 'Введите название'
-    elif not links:
-        return 'Введите ссылки на репозитории'
-    else:
-        for link in links:
-            if 'github.com' not in link:
-                return 'Введите полную ссылку на репозиторий (пример https://github.com/django/django)'
+        flash('Введите название', category='error')
+        return False
+
+    if not set_links:
+        flash('Введите ссылки на репозитории', category='error')
+        return False
+
+    for link in set_links:
+        if 'github.com' not in link:
+            flash('Введите полную ссылку на репозиторий (пример https://github.com/django/django)', category='error')
+            return False
+
+    return True
 
 
 def create_new_parser(name, links):
@@ -60,9 +77,11 @@ def create_new_parser(name, links):
 def change_parser(name, new_links_str: set[str], pull_request_id: int):
     with try_except_session() as session:
         pull_request = session.scalar(select(PullRequest).where(PullRequest.id == pull_request_id))
+
         # change name
         if pull_request.name != name:
             pull_request.name = name
+
         # change links
         cur_links_odj = session.scalars(select(Url).where(Url.pull_request_id == pull_request.id)).all()
         # все старое (то что не повторилось в new_links) удаляем
@@ -73,13 +92,9 @@ def change_parser(name, new_links_str: set[str], pull_request_id: int):
                 session.delete(link)
         # все оставщееся из new_links добавляем
         for link in new_links_str:
-            session.add(
-                Url(
-                    pull_request_id=pull_request_id,
-                    url=link)
-            )
+            session.add(Url(pull_request_id=pull_request_id, url=link))
 
-    return pull_request_id
+    return True
 
 
 def is_exist(pull_request_id: int):
@@ -91,10 +106,10 @@ def is_exist(pull_request_id: int):
 # ---------------------------------------------------------------- #
 # parsing
 # ---------------------------------------------------------------- #
-def run_first_parsing(pull_request_id, type):
+def run_first_parsing(pull_request_id, msg):
     urls = session.scalars(select(Url).where(Url.pull_request_id == pull_request_id)).all()
     if parse_urls(urls):
-        flash(f'Задание на парсинг успешно {"добавлено" if type == "add" else "изменено"}. '
+        flash(f'Задание на парсинг успешно {msg}. '
               f'Пробный парсинг запущен. '
               f'Рекомендуется проверить результат (.json файл).',
               category='success')
@@ -140,6 +155,8 @@ def create_json(pull_request_id, file_path):
     d = create_dict_by_pull_request_id(pull_request_id)
     with open(file_path, "w") as f:
         json.dump(d, f)
+
+
 def create_dict_by_pull_request_id(pull_request_id):
     d = {}
     urls_id = session.scalars(select(Url).where(Url.pull_request_id == pull_request_id)).all()
@@ -155,7 +172,7 @@ def create_dict_by_pull_request_id(pull_request_id):
     return d
 
 
-def delete_old_json_file(pull_request_id):
-    path = f'{PATH_TO_JSON}/{pull_request_id}'
+def delete_old_json_files(pull_request_id):
+    path = os.path.join(JSON_DIR, str(pull_request_id))
     if os.path.exists(path):
         os.remove(path)

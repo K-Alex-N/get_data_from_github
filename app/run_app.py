@@ -7,23 +7,24 @@ from sqlalchemy import select
 
 from app.parser.utils import parse_urls
 from app.store.db import User, session, Url
-from config.config import PATH_TO_JSON
+from config.config import JSON_DIR, secret_key
 
+# ---------------------------------------------------------------- #
+# app
+# ---------------------------------------------------------------- #
 app = Flask(__name__)
-app.config.from_mapping(
-    SECRET_KEY='sfsdfw234sd23rwd23rwd23',
-    SCHEDULER_API_ENABLED=True,
-    SCHEDULER_TIMEZONE="Europe/London",
-)
-
-# Blueprint
+app.config['SECRET_KEY']=secret_key
+# ---------------------------------------------------------------- #
+# Blueprints
+# ---------------------------------------------------------------- #
 from app.parser.routes import parser
 from app.auth.routes import auth
 
 app.register_blueprint(parser, url_prefix='/')
 app.register_blueprint(auth, url_prefix='/')
-
+# ---------------------------------------------------------------- #
 # Flask-login
+# ---------------------------------------------------------------- #
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
@@ -32,8 +33,11 @@ login_manager.init_app(app)
 def load_user(id):
     return session.scalar(select(User).where(User.id == int(id)))
 
-
+# ---------------------------------------------------------------- #
 # APScheduler
+# ---------------------------------------------------------------- #
+app.config.update(SCHEDULER_API_ENABLED=True,
+                  SCHEDULER_TIMEZONE="Europe/London")
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
@@ -53,20 +57,13 @@ def everyday_parsing():
 # @scheduler.task('interval', seconds=2)
 def everyday_delete_JSONs():
     with scheduler.app.app_context():
-        for f in os.listdir(path=PATH_TO_JSON):
-            os.remove(PATH_TO_JSON + '/' + f)
+        for file in os.listdir(path=JSON_DIR):
+            os.remove(os.path.join(JSON_DIR, file))
 
-
+# ---------------------------------------------------------------- #
 # Error handlers
+# ---------------------------------------------------------------- #
 @app.errorhandler(500)
 @app.errorhandler(404)
-def page_not_found(e):
+def error(e):
     return render_template('error/page404.html'), 404
-
-#     # app.config.from_pyfile('config.py', silent=True)
-#
-#     # try:
-#     #     os.makedirs(app.instance_path)
-#     # except OSError:
-#     #     pass
-#

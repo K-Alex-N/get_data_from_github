@@ -1,5 +1,4 @@
 from flask import flash
-from flask_login import login_user
 from sqlalchemy import select
 from werkzeug.security import check_password_hash
 
@@ -16,7 +15,6 @@ def is_login_data_valid(username, password):
         flash('Incorrect password, try again', category='error')
         return False
 
-    login_user(user, remember=True)
     return True
 
 
@@ -27,6 +25,10 @@ def is_registration_data_valid(username, password, password_repeat, email):
 
     if not password or not password_repeat:
         flash('Password and "Repeat password" are required', category='error')
+        return False
+
+    if len(password) < 8 or len(password_repeat) < 8:
+        flash('Password should be >= 8 characters', category='error')
         return False
 
     if password != password_repeat:

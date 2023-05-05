@@ -9,9 +9,10 @@ from flask_login import login_user
 from flask_login import current_user
 from flask_login import logout_user
 from werkzeug.security import generate_password_hash
+from sqlalchemy import select
 
 from app.auth.utils import is_login_data_valid, is_registration_data_valid
-from app.store.db import try_except_session
+from app.store.db import try_except_session, session
 from app.store.db.models import User
 
 auth = Blueprint('auth', __name__)
@@ -22,8 +23,11 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
+        remember_me = True if request.form.get('remember_me') else False
 
         if is_login_data_valid(username, password):
+            login_user(session.scalar(select(User).where(User.username == username)),
+                       remember=remember_me)
             flash('Logged in successfully!', category='success')
             return redirect(url_for('parser.home', user=current_user))
 

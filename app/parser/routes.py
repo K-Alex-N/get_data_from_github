@@ -5,35 +5,32 @@ from flask import Blueprint, redirect, url_for, send_from_directory, request, re
 from flask_login import current_user, login_required
 from sqlalchemy import select
 
-from app.parser.utils import is_exist, add_or_change, delete_old_json_file, create_dict_by_pull_request_id, create_json
+from app.parser.utils import is_exist, delete_old_json_files, create_json, get_home_data, add_pull_request, \
+    change_pull_request
 from app.store.db import session, try_except_session
 from app.store.db.models import PullRequest, Url
-from config.config import PATH_TO_JSON
+from config.config import JSON_DIR
 
 parser = Blueprint('parser', __name__)
 
 
+# ---------------------------------------------------------------- #
+# home page
+# ---------------------------------------------------------------- #
 @parser.route('/')
 def home():
-    pull_requests = session.scalars(select(PullRequest)).all()
-    url = session.scalars(select(Url)).all()
-    data = []
-    for pr in pull_requests:
-        data.append([pr, [u for u in url if u.pull_request_id == pr.id]])
-
+    data = get_home_data()
     return render_template('app/parsing_lists.html', user=current_user, data=data)
-
 
 
 @parser.route('/add', methods=['POST', 'GET'])
 @login_required
 def add():
     if request.method == 'POST':
-        add_or_change(request, 'add')
+        add_pull_request(request)
         return redirect(url_for('parser.home', user=current_user))
 
     return render_template('app/add_new_parsing.html', user=current_user)
-
 
 
 @parser.route('/change/<int:pull_request_id>', methods=['POST', 'GET'])
@@ -41,8 +38,8 @@ def add():
 def change(pull_request_id):
     is_exist(pull_request_id)
     if request.method == 'POST':
-        add_or_change(request, 'change', pull_request_id)
-        delete_old_json_file(pull_request_id)
+        change_pull_request(request, pull_request_id)
+        delete_old_json_files(pull_request_id)
         return redirect(url_for('parser.home', user=current_user))
     else:
         pull_request = session.scalar(select(PullRequest).where(PullRequest.id == pull_request_id))
@@ -54,14 +51,15 @@ def change(pull_request_id):
 @parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])
 def download_json(pull_request_id, file_name):
     is_exist(pull_request_id)
-    file_path = os.path.join(PATH_TO_JSON, str(pull_request_id))
+    file_path = os.path.join(JSON_DIR, str(pull_request_id))
     if not os.path.isfile(file_path):
         create_json(pull_request_id, file_path)
 
-    return send_from_directory(PATH_TO_JSON, str(pull_request_id),
+    return send_from_directory(JSON_DIR, str(pull_request_id),
                                as_attachment=True,
                                download_name=f'{file_name} {str(datetime.date.today())}.json'
                                )
+
 
 @parser.route('/delete/<int:pull_request_id>', methods=['POST', 'GET'])
 @login_required
@@ -73,6 +71,14 @@ def delete_parser(pull_request_id):
     return redirect(url_for('parser.home', user=current_user))
 
 
+# ---------------------------------------------------------------- #
+# other pages
+# ---------------------------------------------------------------- #
 @parser.route('/how_to_use')
 def how_to_use():
     return render_template('app/how_to_use.html', user=current_user)
+
+
+@parser.route('/about')
+def about():
+    return render_template('app/about.html', user=current_user)

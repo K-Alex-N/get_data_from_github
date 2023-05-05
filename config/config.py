@@ -1,35 +1,51 @@
-from os import path, curdir
-from dataclasses import dataclass
+import os
 import yaml
 
 # ----------------------------------- #
-# constants
+# Path
 # ----------------------------------- #
 
-# если запускать это файл то путь будет не верный, это нормально тк запускается main
-PATH_TO_JSON = path.join(path.abspath(curdir), 'app', 'store', 'json_files')
+BASE_DIR = os.path.realpath('./')
+PATH_TO_CONFIG_YML = os.path.join(BASE_DIR, 'config', 'config.yml')
+JSON_DIR = os.path.join(BASE_DIR, 'app', 'store', 'json_files')
+
 
 # ----------------------------------- #
+# config
+# ----------------------------------- #
+
+with open(PATH_TO_CONFIG_YML) as f:
+    raw_config = yaml.safe_load(f)
+
+secret_key = raw_config["SECRET_KEY"]
+
+db = 'dev_db' # change according to status (dev_db or prod_db)
+user =      raw_config[db]['user']
+password =  raw_config[db]['password']
+host =      raw_config[db]['host']
+port =      raw_config[db]['port']
+database =  raw_config[db]['database']
+
+if db == 'dev_db':
+    debug = True
+elif db == 'prod_db':
+    debug = False
+
+
+
+
+# https://flask.palletsprojects.com/en/2.3.x/config/
+# class Config(object):
+#     TESTING = False
 #
-# ----------------------------------- #
-
-@dataclass
-class DatabaseConfig:
-    host: str
-    port: int
-    user: str
-    password: str
-    database: str
-
-@dataclass
-class Config:
-    database: DatabaseConfig = None
-
-
-def setup_config(app):
-    config_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.yml")
-    with open(config_path) as f:
-        raw_config = yaml.safe_load(f)
-
-    app.config = Config(database=DatabaseConfig(**raw_config["database"]))
-
+# class ProductionConfig(Config):
+#     DATABASE_URI = 'mysql://user@localhost/foo'
+#
+# class DevelopmentConfig(Config):
+#     DATABASE_URI = "sqlite:////tmp/foo.db"
+#
+# class TestingConfig(Config):
+#     DATABASE_URI = 'sqlite:///:memory:'
+#     TESTING = True
+#
+# app.config.from_object('configmodule.ProductionConfig')
