@@ -98,9 +98,14 @@ def change_parser(name, new_links_str: set[str], pull_request_id: int):
 
 
 def is_exist(pull_request_id: int):
-    ids = session.scalars(select(PullRequest.id)).all()
+    ids = set(session.scalars(select(PullRequest.id)).all())
     if pull_request_id not in ids:
         abort(404)
+
+
+def is_user_valid(user_id: int):
+    if user_id != current_user.id:
+        abort(403)
 
 
 # ---------------------------------------------------------------- #

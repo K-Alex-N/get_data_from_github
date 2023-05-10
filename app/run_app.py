@@ -67,3 +67,7 @@ def everyday_delete_JSONs():
 @app.errorhandler(404)
 def error(e):
     return render_template('error/page404.html'), 404
+
+@app.errorhandler(403)
+def error(e):
+    return render_template('error/page403.html'), 403
