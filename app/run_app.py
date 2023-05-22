@@ -36,8 +36,10 @@ def load_user(id):
 # ---------------------------------------------------------------- #
 # APScheduler
 # ---------------------------------------------------------------- #
-app.config.update(SCHEDULER_API_ENABLED=True,
-                  SCHEDULER_TIMEZONE="Europe/London")
+app.config.update(
+    SCHEDULER_API_ENABLED=True,
+    SCHEDULER_TIMEZONE="Europe/London"
+)
 scheduler = APScheduler()
 scheduler.init_app(app)
 scheduler.start()
