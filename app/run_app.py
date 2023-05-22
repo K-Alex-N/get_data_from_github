@@ -6,7 +6,7 @@ from flask_apscheduler import APScheduler
 from sqlalchemy import select
 
 from app.parser.utils import parse_urls
-from app.store.db import User, session, Url
+from app.db import User, session, Url
 from config.config import JSON_DIR, secret_key
 
 # ---------------------------------------------------------------- #

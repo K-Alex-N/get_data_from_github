@@ -2,7 +2,7 @@ from flask import flash
 from sqlalchemy import select
 from werkzeug.security import check_password_hash
 
-from app.store.db import session, User
+from app.db import session, User
 
 
 def is_login_data_valid(username, password):

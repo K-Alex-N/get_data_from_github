@@ -7,8 +7,8 @@ from sqlalchemy import select
 
 from app.parser.utils import is_exist, delete_old_json_files, create_json, get_home_data, add_pull_request, \
     change_pull_request, is_user_valid
-from app.store.db import session, try_except_session
-from app.store.db.models import PullRequest, Url
+from app.db import session, try_except_session
+from app.db import PullRequest, Url
 from config.config import JSON_DIR
 
 parser = Blueprint('parser', __name__)
@@ -20,7 +20,7 @@ parser = Blueprint('parser', __name__)
 @parser.route('/')
 def home():
     data = get_home_data()
-    return render_template('app/parsing_lists.html', user=current_user, data=data)
+    return render_template('app/parser_list.html', user=current_user, data=data)
 
 
 @parser.route('/add', methods=['POST', 'GET'])
@@ -30,7 +30,7 @@ def add():
         add_pull_request(request)
         return redirect(url_for('parser.home', user=current_user))
 
-    return render_template('app/add_new_parsing.html', user=current_user)
+    return render_template('app/parser_add.html', user=current_user)
 
 
 @parser.route('/change/<int:pull_request_id>', methods=['POST', 'GET'])
@@ -46,8 +46,7 @@ def change(pull_request_id):
         is_user_valid(pull_request.user_id)
         links = session.scalars(select(Url).where(Url.pull_request_id == pull_request.id)).all()
         str_links = '\n'.join([x.url for x in links])
-        return render_template('app/change.html', user=current_user, pr_name=pull_request.name, links=str_links)
-
+        return render_template('app/parser_change.html', user=current_user, pr_name=pull_request.name, links=str_links)
 
 
 @parser.route('/download_json/<int:pull_request_id>/<path:file_name>', methods=['POST', 'GET'])

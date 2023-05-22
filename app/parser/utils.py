@@ -7,8 +7,8 @@ from flask_login import current_user
 from bs4 import BeautifulSoup as bs
 from sqlalchemy import select
 
-from app.store.db import session, try_except_session
-from app.store.db.models import PullRequest, Url, ParseData
+from app.db import session, try_except_session
+from app.db import PullRequest, Url, ParseData
 from config.config import JSON_DIR
 
 
@@ -43,6 +43,7 @@ def change_pull_request(request, pull_request_id):
     if check_data(name, set_links):
         if change_parser(name, set_links, pull_request_id):
             run_first_parsing(pull_request_id, msg='изменено')
+
 
 def check_data(name, set_links):
     if not name:
@@ -90,6 +91,7 @@ def change_parser(name, new_links_str: set[str], pull_request_id: int):
                 new_links_str.remove(link.url)
             else:
                 session.delete(link)
+
         # все оставщееся из new_links добавляем
         for link in new_links_str:
             session.add(Url(pull_request_id=pull_request_id, url=link))
@@ -115,8 +117,8 @@ def run_first_parsing(pull_request_id, msg):
     urls = session.scalars(select(Url).where(Url.pull_request_id == pull_request_id)).all()
     if parse_urls(urls):
         flash(f'Задание на парсинг успешно {msg}. '
-              f'Пробный парсинг запущен. '
-              f'Рекомендуется проверить результат (.json файл).',
+              f'Пробный парсинг сделан. '
+              f'Результат можно проверить в json-файле.',
               category='success')
         return True
     flash('Ошибка запуска первого парсинга', category='error')

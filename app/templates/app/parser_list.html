@@ -1,26 +1,23 @@
 {% extends "base.html" %}
-
 {% block title %}List of parsers{% endblock %}
 {% block home %}disabled{% endblock %}
 {% block content %}
 <div class="container bg-white">
     <div class="row d-flex justify-content-center">
-        <div class="card shadow-lg mb-5">  <!--обводка-->
-            <div class="card-body p-sm-5"> <!--отступы от обводки-->
-                <!--    Аккардион    -->
-                <!--                <div class="card-body p-sm-7">-->
+        <div class="card shadow-lg mb-5">
+            <div class="card-body p-sm-5">
+
                 <div class="row justify-content-end mb-3">
                     <div class="col-md-auto text-end">
-                        {% if user.is_authenticated %}
-<!--                        <a href="/{{ user.id }}" class="btn btn-outline-warning me-2" type="button">My parsers</a>-->
-                        {% endif %}
                         <a href="/add" class="btn btn-outline-success" type="button">Add parser</a>
                     </div>
                 </div>
-                <!--                </div>-->
+
+                <!--    Аккардион    -->
                 <div class="accordion" role="tablist" id="accordion-1">
                     {% for pr, urls in data %}
                     <div class="accordion-item">
+
                         <!-- Заголовок аккардиона -->
                         <h2 class="accordion-header" role="tab">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -32,6 +29,7 @@
                                 {% endif %}
                             </button>
                         </h2>
+
                         <!-- Тело аккардиона -->
                         <div class="accordion-collapse collapse item-{{ pr.id }}" role="tabpanel">
                             <div class="accordion-body">
@@ -50,16 +48,6 @@
                                             <h4>Info</h4>
                                             <ul class="list-unstyled">
                                                 <li>Started {{ pr.start_date.date() }}</li>
-<!--                                                <li>Created by {{ pr.username }}</li>-->
-                                                <!--
-                                                <li>Frequency:
-                                                    {% if pr.frequency == 1 %} daily
-                                                    {% elif pr.frequency == 7 %} weekly
-                                                    {% elif pr.frequency == 28 %} every 28 days
-                                                    {% endif %}
-                                                </li>
-                                                 <li>Already done 44 scrapings</li>
-                                                 -->
                                             </ul>
                                             <div class="d-flex gap-2 mb-3">
                                                 <a href="{{ url_for('parser.download_json', pull_request_id=pr.id, file_name=pr.name) }}"
@@ -75,28 +63,15 @@
                                                     .JSON
                                                 </a>
                                                 {% if pr.user_id == user.id: %}
-                                                <a href="{{ url_for('parser.change', pull_request_id=pr.id) }}"
-                                                   type="button" class="btn btn-outline-warning">
-                                                    Change
-                                                </a>
-                                                <a type="button" class="btn btn-outline-danger" data-toggle="modal"
-                                                        data-target="#ModalCenter{{pr.id}}">
-                                                    Delete
-                                                </a>
+                                                    <a href="{{ url_for('parser.change', pull_request_id=pr.id) }}"
+                                                       type="button" class="btn btn-outline-warning">
+                                                        Change
+                                                    </a>
+                                                    <a type="button" class="btn btn-outline-danger" data-toggle="modal"
+                                                            data-target="#ModalCenter{{pr.id}}">
+                                                        Delete
+                                                    </a>
                                                 {% endif %}
-                                                <!--<button type="button" class="btn btn-secondary">-->
-                                                <!--
-                                                <button type="button" class="btn btn-outline-warning">
-                                                    Graphs
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                         height="24"
-                                                         fill="currentColor" class="bi bi-arrow-right-square"
-                                                         viewBox="0 0 16 16">
-                                                        <path fill-rule="evenodd"
-                                                              d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4.5 5.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H4.5z"/>
-                                                    </svg>
-                                                </button>
-                                                -->
                                             </div>
                                         </div>
                                     </div>

@@ -7,8 +7,7 @@ import yaml
 
 BASE_DIR = os.path.realpath('./')
 PATH_TO_CONFIG_YML = os.path.join(BASE_DIR, 'config', 'config.yml')
-JSON_DIR = os.path.join(BASE_DIR, 'app', 'store', 'json_files')
-
+JSON_DIR = os.path.join(BASE_DIR, 'app', 'media', 'json_files')
 
 # ----------------------------------- #
 # config
@@ -19,7 +18,7 @@ with open(PATH_TO_CONFIG_YML) as f:
 
 secret_key = raw_config["SECRET_KEY"]
 
-db = 'dev_db' # change according to status (dev_db or prod_db)
+db = 'dev_db'
 user =      raw_config[db]['user']
 password =  raw_config[db]['password']
 host =      raw_config[db]['host']

@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     pass
 
 
-from app.store.db.models import *
+from app.db.models import *
 
 db_url = f"postgresql+psycopg2://{config.user}:{config.password}@{config.host}:{config.port}/{config.database}"
 engine = create_engine(db_url)

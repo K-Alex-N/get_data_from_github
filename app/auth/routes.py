@@ -12,8 +12,8 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import select
 
 from app.auth.utils import is_login_data_valid, is_registration_data_valid
-from app.store.db import try_except_session, session
-from app.store.db.models import User
+from app.db import try_except_session, session
+from app.db import User
 
 auth = Blueprint('auth', __name__)
 
