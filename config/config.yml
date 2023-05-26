@@ -1,0 +1,16 @@
+SECRET_KEY: sfsdfw234sd23rwd23rwd23
+
+
+
+db:
+  user: postgres2
+  password: 123
+  host: localhost
+  port: 5432
+  database: parser
+
+
+
+
+
+
