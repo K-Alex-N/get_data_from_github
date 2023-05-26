@@ -13,7 +13,7 @@ from config.config import JSON_DIR, secret_key
 # app
 # ---------------------------------------------------------------- #
 app = Flask(__name__)
-app.config['SECRET_KEY']=secret_key
+app.config['SECRET_KEY'] = secret_key
 # ---------------------------------------------------------------- #
 # Blueprints
 # ---------------------------------------------------------------- #
@@ -29,9 +29,11 @@ login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
 login_manager.init_app(app)
 
+
 @login_manager.user_loader
 def load_user(id):
     return session.scalar(select(User).where(User.id == int(id)))
+
 
 # ---------------------------------------------------------------- #
 # APScheduler
@@ -45,14 +47,13 @@ scheduler.init_app(app)
 scheduler.start()
 
 
-@scheduler.task('interval', seconds=10000)
-# @scheduler.task('cron', minute=0, hour=0, day='*')
+@scheduler.task('cron', minute=0, hour=0, day='*')
+# @scheduler.task('interval', seconds=10000)
 def everyday_parsing():
     with scheduler.app.app_context():
         urls = session.scalars(select(Url))
         if not parse_urls(urls):
-            # отправлять алерт на почту
-            pass
+            pass # отправлять алерт на почту?
 
 
 @scheduler.task('cron', hour=23, minute=59, day='*')
@@ -62,6 +63,7 @@ def everyday_delete_JSONs():
         for file in os.listdir(path=JSON_DIR):
             os.remove(os.path.join(JSON_DIR, file))
 
+
 # ---------------------------------------------------------------- #
 # Error handlers
 # ---------------------------------------------------------------- #
@@ -69,6 +71,7 @@ def everyday_delete_JSONs():
 @app.errorhandler(404)
 def error(e):
     return render_template('error/page404.html'), 404
+
 
 @app.errorhandler(403)
 def error(e):
