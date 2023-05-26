@@ -18,17 +18,16 @@ with open(PATH_TO_CONFIG_YML) as f:
 
 secret_key = raw_config["SECRET_KEY"]
 
-db = 'dev_db'
-user =      raw_config[db]['user']
-password =  raw_config[db]['password']
-host =      raw_config[db]['host']
-port =      raw_config[db]['port']
-database =  raw_config[db]['database']
 
-if db == 'dev_db':
-    debug = True
-elif db == 'prod_db':
-    debug = False
+user =      raw_config['db']['user']
+password =  raw_config['db']['password']
+host =      raw_config['db']['host']
+port =      raw_config['db']['port']
+database =  raw_config['db']['database']
+
+
+debug = True
+
 
 
 

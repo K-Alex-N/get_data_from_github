@@ -132,7 +132,9 @@ def parse_urls(urls):
         if stars:  # если не найдены "stars" то значит не верный URL
             stars = stars['title'].replace(',', '')
             fork = soup.find(id="repo-network-counter")['title'].replace(',', '')
-            last_commit = soup.find('relative-time')['datetime']
+            last_commit = soup.find('relative-time')
+            if last_commit:
+                last_commit = last_commit['datetime']
 
             r = requests.get(u.url + '/tags')
             soup = bs(r.text, "lxml")
