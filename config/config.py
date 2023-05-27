@@ -26,8 +26,6 @@ port =      raw_config['db']['port']
 database =  raw_config['db']['database']
 
 
-debug = True
-
 
 
 
